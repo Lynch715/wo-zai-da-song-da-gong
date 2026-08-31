@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我在大宋打工 v1</title>
+<style>
+  :root {
+    --paper: #f5f0e6;
+    --ink: #2b2b2b;
+    --seal: #a03028;
+    --dim: #8a8378;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e8e0d0;
+    color: var(--ink);
+    font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+    display: flex; justify-content: center;
+    min-height: 100vh; padding: 16px;
+  }
+  #app {
+    width: 100%; max-width: 640px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 6px 6px 0 rgba(43,43,43,.15);
+    display: flex; flex-direction: column;
+  }
+  header {
+    border-bottom: 2px solid var(--ink);
+    padding: 10px 14px;
+    display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px;
+  }
+  header h1 { font-size: 18px; letter-spacing: 4px; }
+  header .day { color: var(--seal); font-weight: bold; }
+  #stats {
+    display: flex; flex-wrap: wrap; gap: 6px 16px;
+    padding: 8px 14px; border-bottom: 1px dashed var(--dim);
+    font-size: 14px;
+  }
+  #stats b { color: var(--seal); }
+  #debtline { padding: 6px 14px; font-size: 13px; border-bottom: 2px solid var(--ink); background: rgba(160,48,40,.06); }
+  main { display: flex; flex: 1; min-height: 380px; }
+  #locations {
+    width: 150px; border-right: 1px solid var(--dim);
+    padding: 10px; display: flex; flex-direction: column; gap: 8px;
+  }
+  button {
+    font-family: inherit; font-size: 14px;
+    background: var(--paper); color: var(--ink);
+    border: 1px solid var(--ink);
+    padding: 8px 10px; cursor: pointer;
+  }
+  button:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+  button:disabled { color: var(--dim); border-color: var(--dim); cursor: not-allowed; }
+  button.seal { border-color: var(--seal); color: var(--seal); }
+  button.seal:hover:not(:disabled) { background: var(--seal); color: var(--paper); }
+  #panel { flex: 1; padding: 12px 14px; display: flex; flex-direction: column; }
+  #panel h2 { font-size: 16px; margin-bottom: 8px; border-bottom: 1px solid var(--dim); padding-bottom: 4px; }
+  #actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  #actions .hint { font-size: 12px; color: var(--dim); }
+  #log {
+    flex: 1; overflow-y: auto; max-height: 220px;
+    font-size: 13px; line-height: 1.7;
+    border-top: 1px dashed var(--dim); padding-top: 6px;
+  }
+  #log .sys { color: var(--seal); }
+  #log .dim { color: var(--dim); }
+  /* 弹窗 */
+  #overlay {
+    position: fixed; inset: 0; background: rgba(43,43,43,.5);
+    display: none; justify-content: center; align-items: center; padding: 20px;
+  }
+  #overlay.show { display: flex; }
+  #modal {
+    background: var(--paper); border: 2px solid var(--ink);
+    max-width: 420px; width: 100%; padding: 20px;
+  }
+  #modal h3 { color: var(--seal); margin-bottom: 10px; letter-spacing: 2px; }
+  #modal p { font-size: 14px; line-height: 1.8; margin-bottom: 14px; white-space: pre-wrap; }
+  #modal .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  footer { border-top: 1px solid var(--dim); padding: 6px 14px; font-size: 12px; color: var(--dim); }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>我在大宋打工</h1>
+    <span class="day" id="hdr-day"></span>
+  </header>
+  <div id="stats"></div>
+  <div id="debtline"></div>
+  <main>
+    <div id="locations"></div>
+    <div id="panel">
+      <h2 id="loc-title"></h2>
+      <div id="actions"></div>
+      <div id="log"></div>
+    </div>
+  </main>
+  <footer>第1轮骨架 · 后续轮次将开放衙门破案、东市行商、赌坊茶坊</footer>
+</div>
+<div id="overlay"><div id="modal"><h3 id="m-title"></h3><p id="m-text"></p><div class="btns" id="m-btns"></div></div></div>
+
+<script>
+"use strict";
+/* ========== 常量（数值全部来自02-数值稿 v0.2） ========== */
+const GUAN = 1000;                 // 1贯 = 1000文
+const TOTAL_DAYS = 30;
+const SLOTS = ["上午", "下午", "夜晚"];
+const DEBT_INIT = 100 * GUAN;      // 债务100贯
+const NODES = { 10: 20 * GUAN, 20: 55 * GUAN }; // 还款节点（第30天须全清）
+const FOOD_COST = 150;             // 伙食/天
+const RENT_COST = 1 * GUAN;        // 房租/10天
+const SICK_COST = 500;             // 卧床药钱
+const VIOLATE_INTEREST = 5 * GUAN; // 违约罚息
+const SALARY = 2 * GUAN;           // 月俸，第1天发
+
+/* ========== 状态 ========== */
+let S = null;
+function newGame() {
+  S = {
+    day: 1, slot: 0,
+    money: 500,          // 起始盘缠500文
+    stamina: 100,
+    infamy: 0,           // 恶名（骨架阶段暂无来源，第3轮接入）
+    repaid: 0,           // 已还总额
+    debt: DEBT_INIT,     // 剩余债务（违约会涨）
+    loc: "home",
+    over: false,
+    salaryPaid: false,
+  };
+  logClear();
+  log("宣和三年，临汴城。", "sys");
+  log("你替发小周二郎作保借的印子钱，如今利滚利成了一百贯。债主金满堂放话：三十日内还清，否则一纸状书告到州衙，革了你的捕快公职。");
+  log("——第10天前须还够20贯，第20天前累计55贯，第30天全清。去码头扛包也好，想别的门路也罢，先活下去。", "dim");
+  payday();
+  render();
+}
+function payday() {
+  if (!S.salaryPaid) { S.money += SALARY; S.salaryPaid = true; log("月初领了月俸2贯。杯水车薪。", "sys"); }
+}
+
+/* ========== 地点与行动 ========== */
+const LOCATIONS = [
+  { id: "home",   name: "家（陋室）", open: true },
+  { id: "dock",   name: "漕运码头",   open: true },
+  { id: "yamen",  name: "州衙",       open: false, note: "第3轮开放" },
+  { id: "market", name: "东市",       open: false, note: "第2轮开放" },
+  { id: "casino", name: "赌坊",       open: false, note: "第4轮开放" },
+  { id: "tea",    name: "茶坊",       open: false, note: "第4轮开放" },
+];
+const ACTIONS = {
+  home: [
+    { name: "睡觉（过夜）", hint: "仅夜晚 · 体力+40", can: () => S.slot === 2,
+      run: () => { S.stamina = Math.min(100, S.stamina + 40); log("吹灯睡下。体力+40。"); } },
+    { name: "歇息半晌", hint: "体力+15", can: () => S.slot !== 2,
+      run: () => { S.stamina = Math.min(100, S.stamina + 15); log("在家歇了半晌。体力+15。"); } },
+  ],
+  dock: [
+    { name: "扛包", hint: "银钱+350文 · 体力-25 · 仅白天", can: () => S.slot !== 2,
+      run: () => {
+        let pay = 350;
+        if (S.stamina < 20) { pay = Math.floor(pay / 2); log("你脚步虚浮，工头只肯给一半工钱。", "dim"); }
+        S.money += pay; S.stamina = Math.max(0, S.stamina - 25);
+        log(`码头扛了一晌大包，得钱${pay}文。`);
+      } },
+  ],
+};
+
+/* ========== 时间推进 ========== */
+function doAction(a) {
+  if (S.over) return;
+  a.run();
+  advanceSlot();
+}
+function advanceSlot() {
+  if (S.stamina <= 0 && !S.over) { bedridden(); return; }
+  S.slot++;
+  if (S.slot >= SLOTS.length) endDay();
+  render();
+}
+function bedridden() {
+  S.money = Math.max(0, S.money - SICK_COST);
+  S.stamina = 50;
+  log(`你体力耗尽，一头栽倒。请郎中花去${SICK_COST}文，卧床一日。`, "sys");
+  endDay(true);
+  render();
+}
+function endDay(skipLog) {
+  // 伙食
+  if (S.money >= FOOD_COST) { S.money -= FOOD_COST; }
+  else { S.money = 0; S.stamina = Math.max(1, S.stamina - 10); log("囊中羞涩，只喝了碗稀粥。体力-10。", "dim"); }
+  // 房租
+  if (S.day % 10 === 0) {
+    if (S.money >= RENT_COST) { S.money -= RENT_COST; log("交了房租1贯。", "dim"); }
+    else { S.debt += RENT_COST; log("房租交不出，房东记在账上（债务+1贯）。", "sys"); }
+  }
+  // 还款节点
+  checkNode(S.day);
+  if (S.over) return;
+  // 新的一天
+  S.day++;
+  S.slot = 0;
+  if (S.day > TOTAL_DAYS) { finale(); return; }
+  if (!skipLog) log(`—— 第${S.day}天 ——`, "dim");
+}
+function checkNode(day) {
+  if (day === TOTAL_DAYS) { finale(); return; }
+  const need = NODES[day];
+  if (!need) return;
+  if (S.repaid >= need) {
+    modal("还款节点", `第${day}天：你已还${fmt(S.repaid)}，够了${fmt(need)}的数。\n金满堂皮笑肉不笑：“沈捕头果然是条汉子，下一笔，可别误了。”`);
+  } else {
+    S.debt += VIOLATE_INTEREST;
+    S.stamina = Math.max(1, S.stamina - 30);
+    modal("违约！", `第${day}天该还够${fmt(need)}，你只还了${fmt(S.repaid)}。\n夜里两条大汉堵在巷口把你按着揍了一顿（体力-30），临走撂话：利钱再加五贯！`);
+  }
+}
+function finale() {
+  S.over = true;
+  if (S.debt <= 0) {
+    if (S.infamy < 30) modal("结局·青天捕头", "三十日期满，你把最后一串铜钱拍在金满堂案上。\n借据当面烧了。你还是临汴城的捕快，且是百姓交口称赞的好捕快。", true);
+    else modal("结局·笑面阎罗", "钱是还清了。只是夜里走过街市，百姓都躲着你走。\n这一百贯，沾着别人的血。", true);
+  } else {
+    modal("结局·革役归田", `三十日期满，你还欠${fmt(S.debt)}。\n金满堂的状书递进了州衙。三日后，你交还了铁尺与腰牌，出城时没人相送。`, true);
+  }
+  render();
+}
+
+/* ========== 还款 ========== */
+function openLedger() {
+  const canPay = Math.min(S.money, S.debt);
+  const btns = [];
+  [5, 10, 20].forEach(g => {
+    const amt = g * GUAN;
+    if (amt <= canPay) btns.push({ text: `还${g}贯`, fn: () => repay(amt) });
+  });
+  if (canPay > 0) btns.push({ text: `尽数还上（${fmt(canPay)}）`, fn: () => repay(canPay), seal: true });
+  btns.push({ text: "先不还", fn: closeModal });
+  modalBtns("账本", `剩余债务：${fmt(S.debt)}\n已还总额：${fmt(S.repaid)}\n身上银钱：${fmt(S.money)}\n\n${nextNodeText()}`, btns);
+}
+function repay(amt) {
+  S.money -= amt; S.debt -= amt; S.repaid += amt;
+  log(`往金满堂柜上送去${fmt(amt)}。剩余债务${fmt(S.debt)}。`, "sys");
+  closeModal();
+  if (S.debt <= 0) { finale(); } else render();
+}
+function nextNodeText() {
+  for (const d of Object.keys(NODES).map(Number).sort((a, b) => a - b)) {
+    if (S.day <= d && S.repaid < NODES[d]) return `下一节点：第${d}天前累计还够${fmt(NODES[d])}`;
+  }
+  return `最后期限：第${TOTAL_DAYS}天全部还清`;
+}
+
+/* ========== 界面 ========== */
+function fmt(wen) {
+  const g = Math.floor(wen / GUAN), w = wen % GUAN;
+  if (g && w) return `${g}贯${w}文`;
+  if (g) return `${g}贯`;
+  return `${w}文`;
+}
+function render() {
+  document.getElementById("hdr-day").textContent = S.over ? "剧终" : `第${S.day}天 · ${SLOTS[S.slot]}`;
+  document.getElementById("stats").innerHTML =
+    `<span>银钱 <b>${fmt(S.money)}</b></span>` +
+    `<span>体力 <b>${S.stamina}</b>/100${S.stamina < 20 ? " ⚠" : ""}</span>` +
+    `<span>恶名 <b>${S.infamy}</b></span>`;
+  document.getElementById("debtline").innerHTML =
+    `欠债 <b style="color:var(--seal)">${fmt(S.debt)}</b> ｜ 已还 ${fmt(S.repaid)} ｜ ${nextNodeText()}`;
+  // 地点
+  const locBox = document.getElementById("locations");
+  locBox.innerHTML = "";
+  LOCATIONS.forEach(l => {
+    const b = document.createElement("button");
+    b.textContent = l.open ? l.name : `${l.name}｜${l.note}`;
+    b.disabled = !l.open || S.over;
+    if (l.id === S.loc) { b.style.background = "var(--ink)"; b.style.color = "var(--paper)"; }
+    b.onclick = () => { S.loc = l.id; render(); };
+    locBox.appendChild(b);
+  });
+  const ledger = document.createElement("button");
+  ledger.textContent = "账本·还款";
+  ledger.className = "seal";
+  ledger.disabled = S.over;
+  ledger.onclick = openLedger;
+  locBox.appendChild(ledger);
+  // 行动
+  document.getElementById("loc-title").textContent = LOCATIONS.find(l => l.id === S.loc).name;
+  const actBox = document.getElementById("actions");
+  actBox.innerHTML = "";
+  (ACTIONS[S.loc] || []).forEach(a => {
+    const wrap = document.createElement("div");
+    const b = document.createElement("button");
+    b.textContent = a.name;
+    b.disabled = S.over || !a.can();
+    b.onclick = () => doAction(a);
+    const hint = document.createElement("span");
+    hint.className = "hint";
+    hint.textContent = " " + a.hint;
+    wrap.appendChild(b); wrap.appendChild(hint);
+    actBox.appendChild(wrap);
+  });
+  if (S.over) {
+    const rb = document.createElement("button");
+    rb.textContent = "重新来过";
+    rb.className = "seal";
+    rb.onclick = newGame;
+    actBox.appendChild(rb);
+  }
+}
+
+/* ========== 日志与弹窗 ========== */
+function log(msg, cls) {
+  const el = document.getElementById("log");
+  const p = document.createElement("div");
+  if (cls) p.className = cls;
+  p.textContent = msg;
+  el.prepend(p);
+}
+function logClear() { document.getElementById("log").innerHTML = ""; }
+function modal(title, text, ended) {
+  modalBtns(title, text, [{ text: ended ? "看结局" : "知道了", fn: closeModal }]);
+}
+function modalBtns(title, text, btns) {
+  document.getElementById("m-title").textContent = title;
+  document.getElementById("m-text").textContent = text;
+  const box = document.getElementById("m-btns");
+  box.innerHTML = "";
+  btns.forEach(b => {
+    const el = document.createElement("button");
+    el.textContent = b.text;
+    if (b.seal) el.className = "seal";
+    el.onclick = b.fn;
+    box.appendChild(el);
+  });
+  document.getElementById("overlay").classList.add("show");
+}
+function closeModal() { document.getElementById("overlay").classList.remove("show"); render(); }
+
+newGame();
+</script>
+</body>
+</html>
