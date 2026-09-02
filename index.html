@@ -52,6 +52,15 @@
   table.trade button { padding:2px 8px; font-size:12px; }
   .up { color:var(--seal); } .down { color:#3a6b4f; }
   footer { border-top:1px solid var(--dim); padding:6px 14px; font-size:12px; color:var(--dim); }
+  /* 功过册（结局报告） */
+  #report { position:fixed; inset:0; background:rgba(43,43,43,.65); z-index:30; display:none;
+            overflow-y:auto; padding:20px; }
+  #report.show { display:flex; }
+  #report .r-wrap { margin:auto; display:flex; flex-direction:column; align-items:center; gap:14px; }
+  #report canvas { max-width:min(92vw,440px); width:100%; height:auto; border:2px solid var(--ink);
+                   box-shadow:6px 6px 0 rgba(0,0,0,.3); background:var(--paper); }
+  #report .r-btns { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  #report .r-btns button { padding:10px 22px; letter-spacing:3px; }
   /* 字幕式开场/结局 */
   #cine { position:fixed; inset:0; background:#efe8d8; z-index:20; display:none;
           overflow-y:auto; -webkit-overflow-scrolling:touch; padding:28px; }
@@ -102,8 +111,15 @@
     #log { max-height:180px; }
     #modal { padding:14px; }
     #modal .btns button { padding:12px 14px; flex:1 1 40%; }
-    #cine .c-title { font-size:26px; letter-spacing:8px; }
-    #cine .c-body { font-size:14px; line-height:2; }
+    /* 手机上压缩开场/结局，保证「开局」按钮一屏可见 */
+    #cine { padding:14px; }
+    #cine .c-img { max-height:24vh; margin-bottom:12px; }
+    #cine .c-title { font-size:24px; letter-spacing:8px; margin-bottom:12px; }
+    #cine .c-body { font-size:13px; line-height:1.85; }
+    #cine .c-seal { margin-top:14px; width:54px; height:54px; font-size:20px; }
+    #cine .c-btn { margin-top:16px; }
+    #cine .c-btn button { padding:9px 26px; }
+    #cine .c-hint { margin-top:8px; }
   }
 </style>
 </head>
@@ -120,6 +136,7 @@
 </div>
 <div id="overlay"><div id="modal"><h3 id="m-title"></h3><p id="m-text"></p><div class="btns" id="m-btns"></div></div></div>
 <div id="cine"><div class="c-wrap"><img class="c-img" id="c-img" alt=""><div class="c-title" id="c-title"></div><div class="c-body" id="c-body"></div><div class="c-seal" id="c-seal"></div><div class="c-btn"><button id="c-btn"></button></div><div class="c-hint">点击任意处可跳过动画</div></div></div>
+<div id="report"><div class="r-wrap"><canvas id="r-canvas" width="900" height="1350"></canvas><div class="r-btns"><button id="r-save" class="seal">存图·发社交媒体</button><button id="r-again">再来一局</button><button id="r-close">收起</button></div></div></div>
 
 <script>
 "use strict";
@@ -136,6 +153,7 @@ const GOODS = [
   {id:"tea",  name:"茶",   base:1800},
   {id:"herb", name:"药材", base:3000},
   {id:"salt", name:"私盐", base:2200, gray:true}, // 官榷货，贩卖涨恶名
+  {id:"silk", name:"蜀锦", base:4500, wild:true}, // 大起大落的贵货
 ];
 
 /* 小案模板×36：多取材历代公案（十五贯、乌盆、双钉、灰阑、审驴等），线索不点名，须自行推断 */
@@ -637,11 +655,73 @@ const SCENES = {
   </svg>`,
 };
 
+/* ================= NPC：人情线 ================= */
+const NPCS = {
+  qin:{name:"茶坊 秦娘子", who:"街口茶坊的老板娘，寡居三年，一双眼睛比账本还清楚。"},
+  han:{name:"盐枭 韩五", who:"草市上贩私盐的汉子，讲义气，也讲价钱。"},
+  shiye:{name:"孔目房 吴师爷", who:"州衙的老刑名，一肚子案例，两袖茶汤钱。"},
+  liu:{name:"瓦子 柳莺莺", who:"瓦子里唱曲的姑娘，一开嗓，半条街的人都停下脚。"},
+};
+function npcGain(id, n) {
+  S.npc[id] = Math.max(-99, Math.min(100, S.npc[id]+n));
+  npcCheckEvents(id);
+}
+function relText(v) {
+  if (v>=80) return "生死之交"; if (v>=60) return "交情深厚"; if (v>=30) return "熟识";
+  if (v>=10) return "点头之交"; if (v>-50) return "陌路"; return "反目";
+}
+function hanTalk() {
+  const v = S.npc.han;
+  if (v>=60) return "韩五拍着你肩膀，酒碗一碰：「官面上你走，水面下我走，兄弟这条道，给你留着。」";
+  if (v>=30) return "韩五给你满上：「沈捕头不像个官差。官差喝酒，眼睛盯着人；你喝酒，眼睛看着酒。」";
+  return "韩五眯眼打量你半晌，把酒碗推过来：「捕快跟盐枭喝酒，稀罕。喝，喝了才好说话。」";
+}
+function npcCheckEvents(id) {
+  const F = S.npcFlags;
+  if (id==="qin" && S.npc.qin>=30 && !F.qinEvt1) { F.qinEvt1=true;
+    modalBtns("茶坊起了争执","两个泼皮把茶碗砸了一地：「这条街做买卖的，哪个不交例钱？」\n秦娘子攥着抹布，指节发白，眼睛却望向你。",
+      [{text:"把铁尺拍在桌上",fn:()=>{npcGain("qin",20);
+         log("泼皮认得你，赔着笑退了。秦娘子低声道了句谢，那碗茶，往后再没收过你的钱。","sys");
+         log("（秦娘子好感大增。茶坊入股价降为6贯。）","dim");S.npcFlags.qinDiscount=true;closeModal();}},
+       {text:"低头喝茶，只当没看见",fn:()=>{npcGain("qin",-15);
+         log("泼皮扫了钱走了。秦娘子收拾碎瓷，没再看你一眼。","dim");closeModal();}}]);
+  }
+  if (id==="han" && S.npc.han>=60 && !F.hanEvt1) { F.hanEvt1=true;
+    modalBtns("韩五的大买卖","韩五把你拉到船后：「有批盐要过闸，缺个官面上的人押船。一趟8贯。\n出了事，你我各凭本事。」",
+      [{text:"押这一趟（+8贯 · 恶名+6）",fn:()=>{earn("gray",8000);gainInfamy(6);S.stats.saltSold+=4;
+         log("夜里的河面静得吓人。船过闸时，你的心跳得比橹声还响。到岸，8贯。","sys");closeModal();}},
+       {text:"这碗饭我不吃",fn:()=>{npcGain("han",-5);log("韩五也不恼：「各人有各人的道。」","dim");closeModal();}}]);
+  }
+  if (id==="liu" && S.npc.liu>=60 && !F.liuEvt1) { F.liuEvt1=true;
+    modalBtns("瓦子里的恶客","一个锦袍恶少扯住柳莺莺的水袖不放——你认得他，金满堂的侄子。\n满场的人都低下头去。",
+      [{text:"上去掰开他的手（恶名+3）",fn:()=>{npcGain("liu",25);gainInfamy(3);
+         log("你把人拎小鸡似的拎出瓦子。金家的人放话要你好看——随他。","sys");
+         log("柳莺莺隔着帘子唱了支新曲，满场只有你听懂了那句「多谢」。","sys");closeModal();}},
+       {text:"官身不便，转头出门",fn:()=>{npcGain("liu",-30);
+         log("你出了瓦子。身后的曲子唱破了一个音。","dim");closeModal();}}]);
+  }
+}
+/* 瓦子帮闲时偶遇柳莺莺 */
+function liuMeet() {
+  if (S.npcDay.liu!==S.day && Math.random()<0.5) {
+    S.npcDay.liu=S.day; npcGain("liu",4);
+    log("散场后柳莺莺托你捎了趟东西，笑着福了一福。（柳莺莺好感+4）","dim");
+  }
+}
+/* 人情簿 */
+function openRelations() {
+  const lines = Object.keys(NPCS).map(id=>{
+    const v=S.npc[id];
+    return `${NPCS[id].name} ―― ${relText(v)}（${v}）\n　${NPCS[id].who}`;
+  }).join("\n\n");
+  modal("人情簿", lines+"\n\n（吃茶、喝酒、听曲、孝敬，都能攒下人情。人情到了，路就开了。）");
+}
+
 /* ================= 街头随闻（每日开局小事件） ================= */
 const STREET_EVENTS = [
   {cond:()=>S.infamy<30, text:"街角说书人正讲你去年拿贼的旧事，讲得神乎其神。你听了两句，摇头笑笑。", fx:()=>{}},
   {cond:()=>S.infamy>=30, text:"街角说书人压低了嗓子：“要说如今这位沈捕头啊……”见你走近，他忽然改口讲起了三国。", fx:()=>{}},
-  {cond:()=>true, text:"桥洞下捡到半串铜钱，约莫八十文。四下无人认领。", fx:()=>{S.money+=80;}},
+  {cond:()=>true, text:"桥洞下捡到半串铜钱，约莫八十文。四下无人认领。", fx:()=>{earn("other",80);}},
   {cond:()=>true, text:"天落细雨，赶路湿了半身。（体力-5）", fx:()=>{S.stamina=Math.max(1,S.stamina-5);}},
   {cond:()=>S.infamy<20, text:"你曾帮过的老妇人送来一篮热炊饼，说什么也不肯收钱。（体力+8）", fx:()=>{S.stamina=Math.min(100,S.stamina+8);}},
   {cond:()=>S.debt>0, text:"街对面茶棚下，金满堂的两个打手正盯着你，见你看过去，慢条斯理地掰着指节。", fx:()=>{}},
@@ -652,12 +732,14 @@ const STREET_EVENTS = [
 
 /* ================= 状态 ================= */
 let S = null;
+/* 收入记账：src ∈ case/work/trade/gray/shop/other */
+function earn(src, amt) { S.money += amt; if (S.stats && S.stats.earn[src]!==undefined) S.stats.earn[src] += amt; }
 function newGame() {
   S = {
     day:1, slot:0, money:500, stamina:100, infamy:0,
     repaid:0, debt:DEBT_INIT, loc:"home", over:false, salaryPaid:false,
     // 行商
-    inv:{rice:0,cloth:0,tea:0,herb:0,salt:0}, prices:{}, rumor:null, event:null,
+    inv:{rice:0,cloth:0,tea:0,herb:0,salt:0,silk:0}, prices:{}, rumor:null, event:null,
     loadCap:5, ateToday:false, saltTick:0,
     // 破案
     caseTpl:null, caseClue:0, caseCooldown:0, casesUsed:[], caseAsked:false,
@@ -666,13 +748,23 @@ function newGame() {
     louGui:false, chaFang1:false, chaFang2:false,
     // 店铺
     shopTea:0, shopCasino:0, // 0未入 1入股 2全资
+    // 破案加深
+    caseProof:false, caseCleared:-1, caseHinted:false,
+    // NPC好感（秦娘子/韩五/吴师爷/柳莺莺）
+    npc:{qin:0, han:0, shiye:0, liu:0},
+    npcFlags:{}, npcDay:{},
+    // 统计（结局报告用）
+    stats:{ earn:{case:0,work:0,trade:0,gray:0,shop:0,other:0},
+      casesSolved:0, casesWrong:0, casesEaten:0, workCnt:0,
+      tradeBuy:0, tradeSell:0, saltSold:0, sickDays:0, violations:0,
+      streak:0, bestStreak:0, repayCnt:0 },
   };
   rollPrices();
   logClear();
   log("宣和三年，临汴城。","sys");
   log("你替发小周二郎作保借的印子钱，利滚利成了一百贯。债主金满堂放话：三十日内还清，否则告到州衙，革你的捕快公职。");
   log("——第10天前须还够20贯，第20天累计55贯，第30天全清。","dim");
-  if (!S.salaryPaid) { S.money+=SALARY; S.salaryPaid=true; log("月初领了月俸2贯。杯水车薪。","sys"); }
+  if (!S.salaryPaid) { earn("other",SALARY); S.salaryPaid=true; log("月初领了月俸2贯。杯水车薪。","sys"); }
   cinematic("我在大宋打工",
     "宣和三年，临汴城。\n\n你叫沈砚，州衙快班捕快。三日前，放印子钱的金满堂拍着你画押作保的借据，撂下一句话：\n\n“一百贯。三十日。少一文，咱们衙门里见。”\n\n发小周二郎卷了货款跑了，这债，落在你头上。\n破案领赏、码头扛包、东市倒货、入股铺面……\n或者，捞点不那么干净的钱。\n\n路怎么走，你自己挑。",
     "限卅日", "开 局", ()=>{hideCine();}, "cover");
@@ -682,7 +774,7 @@ function newGame() {
 /* ================= 行商 ================= */
 function rollPrices() {
   GOODS.forEach(g => {
-    let p = g.base * (g.id==="salt" ? 0.75 + Math.random()*0.5 : 0.8 + Math.random()*0.4);
+    let p = g.base * (g.wild ? 0.65 + Math.random()*0.7 : g.id==="salt" ? 0.75 + Math.random()*0.5 : 0.8 + Math.random()*0.4);
     if (S.event && S.event.good===g.id) p = g.base * (S.event.dir>0 ? 2.0 : 0.4);
     S.prices[g.id] = Math.round(p/10)*10;
   });
@@ -699,16 +791,30 @@ function scheduleRumor() {
 function invTotal(){ return GOODS.reduce((s,g)=>s+S.inv[g.id],0); }
 function marketPrice(g, rural) {
   let p = S.prices[g.id];
-  if (rural) p = Math.round(p * (g.id==="salt" ? 0.55 : 0.9) /10)*10; // 草市：土产九折，私盐贩子价
+  if (rural) p = Math.round(p * (g.id==="salt" ? (S.npc.han>=30&&!S.npcFlags.hanBetrayed?0.5:0.55) : 0.9) /10)*10; // 草市：土产九折，私盐贩子价（与韩五有交情更贱）
   return p;
 }
 function sellGood(g, price, rural) {
-  S.money += price; S.inv[g.id]--;
+  earn("trade", price); S.stats.tradeSell += price; S.inv[g.id]--;
   if (g.gray) { // 贩私盐，卖一担脏一分
-    S.saltTick++;
+    S.saltTick++; S.stats.saltSold++;
     if (S.saltTick % 2 === 0) { gainInfamy(1); }
     if (S.saltTick === 2) log("盐是榷货。你倒卖私盐的事，瞒不了太久。","dim");
   }
+}
+/* 议价：卖货两成概率遇买家还价 */
+function trySell(g, price, rural) {
+  if (Math.random()<0.2) {
+    const low = Math.round(price*0.95/10)*10, high = Math.round(price*1.15/10)*10;
+    modalBtns("买家还价", `收${g.name}的客商捻着串子："${low}文，多一个子儿没有。"\n你瞧他衣着不俗，未必差这几个钱。`,
+      [{text:`咬定高价（五五之数，成则${high}文）`,fn:()=>{
+         if (Math.random()<0.5) { sellGood(g,high,rural); log(`客商咬牙认了高价，${g.name}卖出${high}文。`,"sys"); }
+         else log("客商甩袖走了。这一担，砸手里了。","dim");
+         openTrade(rural);}},
+       {text:`让利成交（${low}文）`,fn:()=>{sellGood(g,low,rural); openTrade(rural);}}]);
+    return;
+  }
+  sellGood(g, price, rural); openTrade(rural);
 }
 function openTrade(rural) {
   const rows = GOODS.map(g=>{
@@ -718,8 +824,8 @@ function openTrade(rural) {
   const body = rows.map(r=>`${r.g.name}：${r.p}文/担（平价${r.g.base}，现为${r.pct}%）持有${S.inv[r.g.id]}担${r.g.gray?"〔榷货，出手涨恶名〕":""}`).join("\n");
   const btns=[];
   rows.forEach(r=>{
-    if (S.money>=r.p && invTotal()<S.loadCap) btns.push({text:`买${r.g.name}(${r.p})`,fn:()=>{S.money-=r.p;S.inv[r.g.id]++;openTrade(rural);}});
-    if (S.inv[r.g.id]>0) btns.push({text:`卖${r.g.name}(${r.p})`,fn:()=>{sellGood(r.g,r.p,rural);openTrade(rural);},seal:r.pct>=115});
+    if (S.money>=r.p && invTotal()<S.loadCap) btns.push({text:`买${r.g.name}(${r.p})`,fn:()=>{S.money-=r.p;S.stats.tradeBuy+=r.p;S.inv[r.g.id]++;openTrade(rural);}});
+    if (S.inv[r.g.id]>0) btns.push({text:`卖${r.g.name}(${r.p})`,fn:()=>{trySell(r.g,r.p,rural);},seal:r.pct>=115});
   });
   btns.push({text:"离开市集",fn:closeModal});
   modalBtns(rural?"城外草市":"东市行情",
@@ -736,14 +842,29 @@ function pickCase() {
 }
 function caseInvestigate() {
   const c = S.caseTpl;
-  const bribe = 100;
-  if (S.money>=bribe) { S.money-=bribe; }
-  S.stamina = Math.max(0, S.stamina-10);
+  modalBtns(`查案·${c.name}`,
+    "这条线索，你打算怎么查？\n\n走访街坊：体力-10，打点100文，稳当。\n现场勘验：体力-18，不花钱，三成五得【铁证】（指认无误赏钱加五成）。\n买消息：体力-3，花300文，快但贵。",
+    [
+    {text:"走访街坊", fn:()=>{closeModal(); caseClueGain(10,100,"visit"); advanceSlot();}},
+    {text:"现场勘验", fn:()=>{closeModal(); caseClueGain(18,0,"scene"); advanceSlot();}},
+    {text:"买消息", can:S.money>=300, fn:()=>{closeModal(); caseClueGain(3,300,"buy"); advanceSlot();}},
+    {text:"再想想", fn:closeModal},
+  ].filter(b=>b.can===undefined||b.can));
+}
+function caseClueGain(stCost, cost, how) {
+  const c = S.caseTpl;
+  if (how==="visit" && S.npc.shiye>=60) cost=0; // 师爷的面子，街坊不收打点
+  if (S.money>=cost) S.money-=cost;
+  S.stamina = Math.max(0, S.stamina-stCost);
   const clue = c.clues[S.caseClue];
   S.caseClue++;
   log(`【${c.name}】线索${S.caseClue}/${c.clues.length}：${clue}`);
-  // 敲诈机会
-  if (Math.random()<0.3) {
+  if (how==="scene" && !S.caseProof && Math.random()<0.35) {
+    S.caseProof = true;
+    log("你蹲在现场多看了半炷香，拾着一样旁人漏了的物证。【铁证】指认无误时赏钱加五成。","sys");
+  }
+  // 敲诈机会（买消息不遇）
+  if (how!=="buy" && Math.random()<0.3) {
     const gain = (3+Math.floor(Math.random()*6))*GUAN;
     const SQUEEZE = [
       "问话问到半路，你撞见城东的刘员外从暗门里出来——里头住的可不是他家娘子。他堵在门口，脸一阵红一阵白。",
@@ -753,7 +874,7 @@ function caseInvestigate() {
     ];
     modalBtns("路上的“机会”",
       `${SQUEEZE[Math.floor(Math.random()*SQUEEZE.length)]}\n对方愿出${fmt(gain)}，买你只当没看见。`,
-      [{text:`收下（恶名+8）`,fn:()=>{S.money+=gain;gainInfamy(8);log(`收了乡绅${fmt(gain)}封口钱。`,"sys");closeModal();}},
+      [{text:`收下（恶名+8）`,fn:()=>{earn("gray",gain);gainInfamy(8);log(`收了乡绅${fmt(gain)}封口钱。`,"sys");closeModal();}},
        {text:"秉公办理",fn:()=>{log("你哼了一声，只当没看见那锭银子。","dim");closeModal();}}]);
   }
 }
@@ -766,15 +887,34 @@ function caseAsk() {
   btns.push({text:"退堂",fn:closeModal});
   modalBtns(`提审·${c.name}`, "三人都带到了堂下。你先问谁？", btns);
 }
+function caseConfront() {
+  const c = S.caseTpl;
+  S.stamina = Math.max(0, S.stamina-8);
+  const innocents = c.suspects.map((_,i)=>i).filter(i=>i!==c.culprit && i!==S.caseCleared);
+  S.caseCleared = innocents[Math.floor(Math.random()*innocents.length)];
+  modal(`对质·${c.name}`,
+    `你把几人叫到一处，教他们当面对口供。\n供词一句句对下来，${c.suspects[S.caseCleared]}的说辞处处对得上，嫌疑洗清了。\n（剩下的人里，必有真凶。）`);
+}
 function caseAccuse() {
   const c = S.caseTpl;
-  const btns = c.suspects.map((sp,i)=>({text:sp,fn:()=>{
+  const btns = c.suspects.map((sp,i)=>({
+    text: i===S.caseCleared ? `${sp}（嫌疑已清）` : sp,
+    fn:()=>{
     let r = c.reward;
     const ok = (i===c.culprit);
-    if (ok) log(`【${c.name}】指认无误，人犯画押！领赏钱${fmt(r)}。`,"sys");
-    else { r=Math.floor(r/2); log(`【${c.name}】拿错了人。真凶得了信，早出城了。知县把案卷摔在你面前，赏钱减半，得${fmt(r)}。`,"dim"); }
-    S.money += r;
-    const finish = ()=>{ S.caseTpl=null; S.caseClue=0; S.caseAsked=false; S.caseCooldown=1; closeModal(); };
+    if (ok) {
+      if (S.caseProof) r = Math.round(r*1.5);
+      S.stats.casesSolved++; S.stats.streak++;
+      S.stats.bestStreak = Math.max(S.stats.bestStreak, S.stats.streak);
+      log(`【${c.name}】指认无误，人犯画押！领赏钱${fmt(r)}${S.caseProof?"（铁证在手，赏钱加五成）":""}。`,"sys");
+      if (S.stats.streak>0 && S.stats.streak%3===0) {
+        earn("case",1000);
+        log(`连破${S.stats.streak}案，知县当堂嘉奖1贯："临汴有你，是百姓的福气。"`,"sys");
+      }
+    }
+    else { r=Math.floor(r/2); S.stats.casesWrong++; S.stats.streak=0; log(`【${c.name}】拿错了人。真凶得了信，早出城了。知县把案卷摔在你面前，赏钱减半，得${fmt(r)}。`,"dim"); }
+    earn("case", r);
+    const finish = ()=>{ S.caseTpl=null; S.caseClue=0; S.caseAsked=false; S.caseProof=false; S.caseCleared=-1; S.caseHinted=false; S.caseCooldown=1; closeModal(); };
     const txt = ok ? c.verdict : c.miss;
     if (txt) modalBtns(ok?`结案·${c.name}`:`错断·${c.name}`, `${txt}\n\n（赏钱${fmt(r)}）`,
       [{text:ok?"退堂":"罢了",fn:finish,seal:ok}]);
@@ -789,9 +929,9 @@ function caseEat() {
   const c = S.caseTpl;
   const gain = c.reward*3;
   modalBtns("吃案", `嫌犯托人送来${fmt(gain)}，求你把案子办成悬案。\n（恶名+10，此案就此了结，无赏钱）`,
-    [{text:"收钱结案",fn:()=>{S.money+=gain;gainInfamy(10);
+    [{text:"收钱结案",fn:()=>{earn("gray",gain);gainInfamy(10);S.stats.casesEaten++;S.stats.streak=0;
        log(`【${c.name}】办成了悬案。袖子里多了${fmt(gain)}。`,"sys");
-       S.caseTpl=null;S.caseClue=0;S.caseCooldown=2;closeModal();}},
+       S.caseTpl=null;S.caseClue=0;S.caseProof=false;S.caseCleared=-1;S.caseHinted=false;S.caseCooldown=2;closeModal();}},
      {text:"不干",fn:closeModal}]);
 }
 
@@ -822,7 +962,7 @@ function mainAccuse() {
   const act = MAIN_ACTS[S.mainAct];
   const btns = act.suspects.map((sp,i)=>({text:sp,fn:()=>{
     if (i===act.culprit) {
-      S.money+=act.reward;
+      earn("case",act.reward); S.stats.casesSolved++;
       log(`【主线】${act.name}了结，领赏钱${fmt(act.reward)}。`,"sys");
       const nextAct = S.mainAct+1;
       const unlock = MAIN_ACTS[nextAct] ? MAIN_ACTS[nextAct].unlock : S.day+2;
@@ -834,7 +974,7 @@ function mainAccuse() {
           closeModal();
         }}]);
     } else {
-      S.money+=Math.floor(act.reward/2);
+      earn("case",Math.floor(act.reward/2)); S.stats.casesWrong++;
       log("【主线】指认有误！真凶得了信，线索断了大半。赏钱减半，两日后另寻门路再查。","dim");
       S.mainClue=Math.max(0,S.mainClue-2); S.mainState="wait"; S.mainUnlockDay=S.day+2;
       closeModal();
@@ -846,7 +986,7 @@ function mainAccuse() {
 function mainGray() {
   const act = MAIN_ACTS[S.mainAct];
   modalBtns("歧路", act.grayText,
-    [{text:"拿钱断线",fn:()=>{S.money+=act.grayGain;gainInfamy(act.grayInfamy||10);
+    [{text:"拿钱断线",fn:()=>{earn("gray",act.grayGain);gainInfamy(act.grayInfamy||10);
        S.mainState="dead";
        log("你收了钱。这条线，就此断了。夜里你睡得并不踏实。","sys");closeModal();}},
      {text:"不卖",fn:closeModal}]);
@@ -865,7 +1005,8 @@ function gainInfamy(n) {
   else if (S.infamy>=40 && !S.chaFang1) { S.chaFang1=true; chaFang(1); }
 }
 function chaFang(round) {
-  const cost = Math.ceil(S.infamy/10)*GUAN;
+  let cost = Math.ceil(S.infamy/10)*GUAN;
+  if (S.npc.shiye>=40) cost = Math.ceil(cost/2/100)*100; // 师爷递过话，御史的价码打了对折
   const btns=[];
   if (S.money>=cost) btns.push({text:`打点摆平（${fmt(cost)}）`,fn:()=>{S.money-=cost;
     log(`银子铺路，御史的卷宗里没了你的名字。破财${fmt(cost)}。`,"sys");closeModal();}});
@@ -912,39 +1053,65 @@ const ACTIONS = {
      run:()=>{S.money-=300;S.ateToday=true;S.stamina=Math.min(100,S.stamina+12);log("有肉有汤，吃了个踏实。体力+12。");}},
   ],
   dock: [
-    {name:"扛包", hint:"+500文 · 体力-25 · 仅白天", can:()=>S.slot!==2,
+    {name:"扛包", hint:"+500文 · 体力-25 · 仅白天", can:()=>S.slot!==2&&!S.npcFlags.dockBoss,
      run:()=>{let p=500; if(S.stamina<20){p=Math.floor(p/2);log("你脚步虚浮，工头只肯给一半。","dim");}
-       S.money+=p;S.stamina=Math.max(0,S.stamina-25);log(`码头扛了一晌大包，得钱${p}文。`);}},
+       earn("work",p);S.stats.workCnt++;S.npcFlags.dockCnt=(S.npcFlags.dockCnt||0)+1;
+       S.stamina=Math.max(0,S.stamina-25);log(`码头扛了一晌大包，得钱${p}文。`);
+       if (S.npcFlags.dockCnt===3) { S.npcFlags.dockBoss=true;
+         modal("工头拍了拍你的肩","“沈捕头，你这膀子力气、这份眼力，扛包屈才了。往后你来给我督工点数，工钱六百，还省力气。”\n（扛包→督工：+600文，体力-15）");
+       }}},
+    {name:"督工点数", hint:"+600文 · 体力-15 · 仅白天", can:()=>S.slot!==2&&!!S.npcFlags.dockBoss,
+     run:()=>{let p=600; if(S.stamina<20)p=Math.floor(p/2);
+       earn("work",p);S.stats.workCnt++;S.stamina=Math.max(0,S.stamina-15);
+       log(`在码头督了一晌工，点货记数，得钱${p}文。`);}},
   ],
   market: [
     {name:"赶集交易", hint:"看行情、买卖货物", can:()=>true,
      run:()=>{ openTrade(false); }},
-    {name:"瓦子帮闲", hint:"+350文 · 体力-10 · 下午/夜晚", can:()=>S.slot>=1,
-     run:()=>{let p=350; if(S.stamina<20)p=Math.floor(p/2);
-       S.money+=p;S.stamina=Math.max(0,S.stamina-10);log(`在瓦子跑腿帮闲，得钱${p}文。`);}},
-    {name:"富户护院", hint:"+800文 · 体力-15 · 仅夜晚 · 偶有贼人", can:()=>S.slot===2,
-     run:()=>{let p=800; if(S.stamina<20)p=Math.floor(p/2);
-       S.money+=p;S.stamina=Math.max(0,S.stamina-15);log(`替富户守了一夜宅子，得钱${p}文。`);
+    {name:"瓦子帮闲", hint:()=>S.npc.liu>=30?"+450文 · 体力-10 · 下午/夜晚（柳娘子引荐）":"+350文 · 体力-10 · 下午/夜晚", can:()=>S.slot>=1,
+     run:()=>{let p=S.npc.liu>=30?450:350; if(S.stamina<20)p=Math.floor(p/2);
+       earn("work",p);S.stats.workCnt++;S.stamina=Math.max(0,S.stamina-10);
+       log(`在瓦子跑腿帮闲，得钱${p}文${S.npc.liu>=30?"（柳娘子引荐的都是阔客）":""}。`);
+       liuMeet();}},
+    {name:"富户护院", hint:()=>S.npcFlags.guardVIP?"+1000文 · 体力-15 · 仅夜晚（长聘）":"+800文 · 体力-15 · 仅夜晚 · 偶有贼人", can:()=>S.slot===2,
+     run:()=>{let p=S.npcFlags.guardVIP?1000:800; if(S.stamina<20)p=Math.floor(p/2);
+       earn("work",p);S.stats.workCnt++;S.stamina=Math.max(0,S.stamina-15);log(`替富户守了一夜宅子，得钱${p}文。`);
        if (Math.random()<0.15) {
          modalBtns("夜半有贼！","三更天，后墙上探进来一个黑影。你握紧了铁尺。",
-           [{text:"拼死拿下（体力-25）",fn:()=>{S.stamina=Math.max(1,S.stamina-25);S.money+=2000;
-              log("一番扭打把贼捆了。富户天亮谢了你2贯。","sys");closeModal();}},
+           [{text:"拼死拿下（体力-25）",fn:()=>{S.stamina=Math.max(1,S.stamina-25);earn("work",2000);
+              log("一番扭打把贼捆了。富户天亮谢了你2贯。","sys");
+              if (!S.npcFlags.guardVIP) { S.npcFlags.guardVIP=true;
+                log("富户当场拍板长聘：“沈捕头守夜，往后一夜一贯！”","sys"); }
+              closeModal();}},
             {text:"咳嗽一声吓走了事",fn:()=>{log("黑影翻墙跑了。多一事不如少一事。","dim");closeModal();}}]);
        }}},
     {name:"替书铺抄书", hint:"+300文 · 体力-8", can:()=>true,
      run:()=>{let p=300; if(S.stamina<20)p=Math.floor(p/2);
-       S.money+=p;S.stamina=Math.max(0,S.stamina-8);log(`抄了一晌《太平广记》，得钱${p}文。`);}},
+       earn("work",p);S.stats.workCnt++;S.npcFlags.copyCnt=(S.npcFlags.copyCnt||0)+1;
+       S.stamina=Math.max(0,S.stamina-8);log(`抄了一晌《太平广记》，得钱${p}文。`);
+       if (S.npcFlags.copyCnt===3 && !S.npcFlags.scribe) { S.npcFlags.scribe=true;
+         modal("书铺老板凑过来","“沈捕头一笔好字，又懂刑名。街坊要写状子诉状，求到我这儿的不少——您代写，一份五百文，我抽五十。”\n（解锁：代写状子）");
+       }}},
+    {name:"代写状子", hint:"+450文 · 体力-10 · 须破过2案", can:()=>!!S.npcFlags.scribe&&S.stats.casesSolved>=2,
+     run:()=>{let p=450; if(S.stamina<20)p=Math.floor(p/2);
+       earn("work",p);S.stats.workCnt++;S.stamina=Math.max(0,S.stamina-10);
+       log(`替人写了张状子，条分缕析，得钱${p}文。`);}},
     {name:"买条扁担（2贯）", hint:"负重5→8担", can:()=>S.loadCap===5&&S.money>=2000, noSlot:true,
      run:()=>{S.money-=2000;S.loadCap=8;log("添了条硬木扁担，能多挑三担货。","sys");}},
     {name:"雇辆骡车（12贯）", hint:"负重8→14担", can:()=>S.loadCap===8&&S.money>=12000, noSlot:true,
      run:()=>{S.money-=12000;S.loadCap=14;log("赁了辆骡车连骡带夫，跑买卖像样多了。","sys");}},
+    {name:"典个货栈（8贯）", hint:"负重14→22担 · 囤货待涨", can:()=>S.loadCap===14&&S.money>=8000, noSlot:true,
+     run:()=>{S.money-=8000;S.loadCap=22;log("典下东市口半间货栈。囤得下货，才接得住行情。","sys");}},
   ],
   rural: [
     {name:"赶草市集", hint:"体力-10 · 土产便宜，还有盐枭", can:()=>S.slot!==2,
      run:()=>{S.stamina=Math.max(0,S.stamina-10);openTrade(true);}},
     {name:"田头帮工", hint:"+400文 · 体力-20 · 仅白天", can:()=>S.slot!==2,
      run:()=>{let p=400; if(S.stamina<20)p=Math.floor(p/2);
-       S.money+=p;S.stamina=Math.max(0,S.stamina-20);log(`帮着割了半晌豆子，得钱${p}文。`);}},
+       earn("work",p);S.stats.workCnt++;S.stamina=Math.max(0,S.stamina-20);log(`帮着割了半晌豆子，得钱${p}文。`);}},
+    {name:"与韩五喝碗浊酒", hint:"体力-5 · 结交盐枭 · 每日一次 · 不耗时段", can:()=>S.npcDay.han!==S.day&&S.npc.han>-50, noSlot:true,
+     run:()=>{S.npcDay.han=S.day; S.stamina=Math.max(0,S.stamina-5); npcGain("han",6);
+       log(hanTalk(),"dim");}},
   ],
   yamen: [],
   casino: [],
@@ -953,16 +1120,41 @@ const ACTIONS = {
 
 function yamenActions() {
   const acts=[];
+  // 吴师爷
+  acts.push({name:"给吴师爷捎份茶汤钱", hint:()=>`500文 · 好感+5 · 每日一次 · 不耗时段（现下：${relText(S.npc.shiye)}）`,
+    can:()=>S.npcDay.shiye!==S.day&&S.money>=500, noSlot:true,
+    run:()=>{S.npcDay.shiye=S.day;S.money-=500;npcGain("shiye",5);
+      log(S.npc.shiye>=60?"吴师爷捋着须：「沈捕头办的案子，老夫在知县跟前，都替你多说了半句。」"
+        : S.npc.shiye>=30?"吴师爷接了钱，顺手把新到的案例抄本推给你翻了翻。"
+        : "吴师爷眼皮一抬，把钱拢进袖子：「规矩人。」","dim");}});
+  if (S.caseTpl && S.npc.shiye>=30 && !S.caseHinted && S.caseClue>=1)
+    acts.push({name:"请吴师爷看看案卷", hint:"老刑名的眼力 · 每案一次 · 不耗时段", can:()=>true, noSlot:true,
+      run:()=>{S.caseHinted=true;
+        const c=S.caseTpl;
+        const innocents=c.suspects.map((_,i)=>i).filter(i=>i!==c.culprit&&i!==S.caseCleared);
+        if(innocents.length){S.caseCleared=innocents[Math.floor(Math.random()*innocents.length)];
+          modal("师爷过目",`吴师爷把案卷翻了两遍，笔杆敲着其中一行：\n「${c.suspects[S.caseCleared]}这条线，对不上。老夫做了三十年刑名，这种人犯不了这种案。」\n（${c.suspects[S.caseCleared]}嫌疑洗清）`);}
+        else modal("师爷过目","吴师爷翻了翻案卷：「能洗清的都洗清了，剩下的，要靠你自己拿主意。」");}});
+  // 出首韩五
+  if (S.npc.han>=30 && !S.npcFlags.hanBetrayed)
+    acts.push({name:"（灰名单）出首盐枭韩五", hint:"赏10贯 · 恶名-5 · 私盐路子断绝", can:()=>true, noSlot:true,
+      run:()=>{modalBtns("出首","你知道韩五的船几时过闸、货藏在哪个滩。\n一纸首状递上去，就是10贯赏钱，和一条人命的前程。",
+        [{text:"递首状",fn:()=>{S.npcFlags.hanBetrayed=true;S.npc.han=-99;earn("case",10000);S.infamy=Math.max(0,S.infamy-5);
+           log("盐船在闸口被截。韩五被押过州衙门口时，隔着人群看了你一眼，没骂，也没求。","sys");
+           log("赏钱10贯。往后草市上，再没人跟你喝酒。","dim");closeModal();}},
+         {text:"状纸揣回袖里",fn:closeModal}]);}});
   // 小案
   if (S.caseTpl) {
     const c=S.caseTpl;
     if (S.caseClue < c.clues.length)
-      acts.push({name:`查案：${c.name}（${S.caseClue}/${c.clues.length}）`, hint:"体力-10 · 打点100文", can:()=>true, run:caseInvestigate});
+      acts.push({name:`查案：${c.name}（${S.caseClue}/${c.clues.length}）`, hint:"择一手段，各有代价", can:()=>true, noSlot:true, run:caseInvestigate});
     if (S.caseClue >= 1)
       acts.push({name:S.caseClue<c.clues.length?`提前指认（线索${S.caseClue}/${c.clues.length}）`:`指认真凶：${c.name}`,
         hint:S.caseClue<c.clues.length?"省时段，但看走眼赏钱减半":"不耗时段", can:()=>true, noSlot:true, run:caseAccuse});
     if (c.say)
       acts.push({name:`提审嫌犯：${c.name}`, hint:S.caseAsked?"再听一遍供词 · 不耗时段":"三人各说各话 · 体力-5 · 不耗时段", can:()=>true, noSlot:true, run:caseAsk});
+    if (c.say && S.caseClue>=2 && S.caseCleared<0)
+      acts.push({name:"叫嫌犯当堂对质", hint:"体力-8 · 洗清一人嫌疑 · 不耗时段", can:()=>S.stamina>8, noSlot:true, run:caseConfront});
     acts.push({name:"（灰）收钱结案", hint:`+${fmt(c.reward*3)} · 恶名+10`, can:()=>true, noSlot:true, run:caseEat});
   } else if (S.caseCooldown<=0) {
     acts.push({name:"接一桩小案", hint:"衙门案卷里挑一件", can:()=>true, noSlot:true,
@@ -1004,9 +1196,24 @@ function casinoActions() {
 }
 function teaActions() {
   const acts=[];
-  if (S.shopTea===0)
-    acts.push({name:`入股茶坊（${fmt(SHOP_TEA_COST)}）`, hint:`每10日分红${fmt(SHOP_TEA_DIV)}`, can:()=>S.money>=SHOP_TEA_COST, noSlot:true,
-      run:()=>{S.money-=SHOP_TEA_COST;S.shopTea=1;log("你入股了街口茶坊。老板娘笑着给你续了碗新茶。");}});
+  acts.push({name:"陪秦娘子吃茶闲话", hint:()=>`100文 · 好感+5 · 每日一次 · 不耗时段（现下：${relText(S.npc.qin)}）`,
+    can:()=>S.npcDay.qin!==S.day&&S.money>=100, noSlot:true,
+    run:()=>{S.npcDay.qin=S.day;S.money-=100;npcGain("qin",5);
+      const talk = S.npc.qin>=60 ? "秦娘子把新焙的茶给你留了头一碗，闲话间说起街面上的事，桩桩都是有用的。"
+        : S.npc.qin>=30 ? "秦娘子记得你的口味了，茶没等点就上来了。"
+        : "你在柜边吃了碗茶。秦娘子手上擦着碗，眼睛把你看了个明白。";
+      log(talk,"dim");
+      if (S.npc.qin>=30 && !S.rumor && Math.random()<0.4) {
+        const g = GOODS[Math.floor(Math.random()*GOODS.length)];
+        const dir = Math.random()<0.6 ? 1 : -1;
+        S.rumor = {good:g.id, dir};
+        log(`秦娘子压低声音：「行商的客人说，明日${g.name}价怕是要${dir>0?"涨":"跌"}。」`,"sys");
+      }}});
+  if (S.shopTea===0) {
+    const cost = S.npcFlags.qinDiscount ? 6*GUAN : SHOP_TEA_COST;
+    acts.push({name:`入股茶坊（${fmt(cost)}）`, hint:`每10日分红${fmt(SHOP_TEA_DIV)}${S.npcFlags.qinDiscount?" · 秦娘子给你留的情面价":""}`, can:()=>S.money>=cost, noSlot:true,
+      run:()=>{S.money-=cost;S.shopTea=1;log("你入股了街口茶坊。老板娘笑着给你续了碗新茶。");}});
+  }
   else if (S.shopTea===1)
     acts.push({name:"盘下整间茶坊（17贯）", hint:"分红提到5贯/10日", can:()=>S.money>=17000, noSlot:true,
       run:()=>{S.money-=17000;S.shopTea=2;log("茶坊姓沈了。老板娘留下当掌柜，工钱从分红里走。","sys");}});
@@ -1034,7 +1241,7 @@ function advanceSlot() {
 }
 function bedridden() {
   S.money=Math.max(0,S.money-SICK_COST);
-  S.stamina=50;
+  S.stamina=50; S.stats.sickDays++;
   log(`你体力耗尽，一头栽倒。请郎中花去${SICK_COST}文，卧床一日。`,"sys");
   endDay(true); render();
 }
@@ -1050,15 +1257,16 @@ function endDay(skipLog) {
       const r = Math.random();
       if (r<0.25) { div=Math.round(div*1.5); log("这一旬茶坊生意红火（分红×1.5）。","dim"); }
       else if (r<0.4) { div-=1000; log("衙前来茶坊‘借’了一回茶钱（分红-1贯）。","dim"); }
-      S.money+=div; log(`茶坊分红${fmt(div)}。`,"sys");
+      if (S.npc.qin>=60) { div+=500; }
+      earn("shop",div); log(`茶坊分红${fmt(div)}${S.npc.qin>=60?"（秦娘子替你把账理得明明白白，多出5百文）":""}。`,"sys");
     }
     if (S.shopCasino) {
       let div = S.shopCasino===2 ? 12000 : SHOP_CASINO_DIV;
       const r = Math.random();
       if (r<0.25) { div=Math.round(div*1.5); log("这一旬赌坊夜夜满座（分红×1.5）。","dim"); }
       else if (r<0.4) { div-=2000; log("赌坊有人闹事砸了桌椅（分红-2贯）。","dim"); }
-      S.money+=div; gainInfamy(S.shopCasino===2?3:2); log(`赌坊分红${fmt(div)}（恶名+${S.shopCasino===2?3:2}）。`,"sys"); }
-    if (S.louGui) { S.money+=1500; gainInfamy(3); log("各家商户的平安钱收上来了，1.5贯（恶名+3）。","sys"); }
+      earn("shop",div); gainInfamy(S.shopCasino===2?3:2); log(`赌坊分红${fmt(div)}（恶名+${S.shopCasino===2?3:2}）。`,"sys"); }
+    if (S.louGui) { earn("gray",1500); gainInfamy(3); log("各家商户的平安钱收上来了，1.5贯（恶名+3）。","sys"); }
   }
   checkNode(S.day);
   if (S.over) return;
@@ -1093,7 +1301,7 @@ function checkNode(day) {
     modal("还款节点",`第${day}天：你已还${fmt(S.repaid)}，够了${fmt(need)}的数。\n金满堂皮笑肉不笑：“沈捕头果然是条汉子，下一笔，可别误了。”`);
   else {
     S.debt+=VIOLATE_INTEREST;
-    S.stamina=Math.max(1,S.stamina-30);
+    S.stamina=Math.max(1,S.stamina-30); S.stats.violations++;
     modal("违约！",`第${day}天该还够${fmt(need)}，你只还了${fmt(S.repaid)}。\n夜里两条大汉堵在巷口把你按着揍了一顿（体力-30），临走撂话：利钱再加五贯！`);
   }
 }
@@ -1120,7 +1328,7 @@ function openLedger() {
   modalBtns("账本",`剩余债务：${fmt(S.debt)}\n已还总额：${fmt(S.repaid)}\n身上银钱：${fmt(S.money)}\n\n${nextNodeText()}`,btns);
 }
 function repay(amt) {
-  S.money-=amt; S.debt-=amt; S.repaid+=amt;
+  S.money-=amt; S.debt-=amt; S.repaid+=amt; S.stats.repayCnt++;
   log(`往金满堂柜上送去${fmt(amt)}。剩余债务${fmt(S.debt)}。`,"sys");
   closeModal();
   if (S.debt<=0) finale(); else render();
@@ -1129,6 +1337,94 @@ function nextNodeText() {
   for (const d of Object.keys(NODES).map(Number).sort((a,b)=>a-b))
     if (S.day<=d && S.repaid<NODES[d]) return `下一节点：第${d}天前累计还够${fmt(NODES[d])}`;
   return `最后期限：第${TOTAL_DAYS}天全部还清`;
+}
+
+/* ================= 功过册（结局报告·可导出图片） ================= */
+const ENDING_VERDICT = {
+  "青天捕头":{grade:"上上考", lines:["卅日清债，两袖仍风。","所欠者银，所还者心。","临汴有此捕头，百姓夜不闭户。"]},
+  "笑面阎罗":{grade:"中下考", lines:["债是清了，名也污了。","银钱有数，人心无价。","功过相抵，且记且看。"]},
+  "革役归田":{grade:"下下考", lines:["限满而债未清，革役归田。","交还铁尺之日，长街无人相送。","官道漫漫，且去且行。"]},
+  "锒铛入狱":{grade:"劣　考", lines:["以捕为名，以贪为实。","人证物证俱在，枷号三日。","革役，下狱，游街。"]},
+  "反客为主":{grade:"超上考", lines:["翻三案，锄一霸，债契作废。","冤者得雪，恶者伏法。","反客为主，快意恩仇。"]},
+};
+function drawVert(ctx,str,x,y,size,color,gap) {
+  ctx.fillStyle=color; ctx.font=`${size}px "Songti SC","SimSun","Noto Serif SC",serif`;
+  ctx.textAlign="center"; ctx.textBaseline="top";
+  let cy=y; for (const ch of str) { ctx.fillText(ch,x,cy); cy+=size+gap; }
+}
+function buildReport() {
+  const cv=document.getElementById("r-canvas"), ctx=cv.getContext("2d");
+  const W=cv.width, H=cv.height, st=S.stats;
+  const FONT=(s,b)=>`${b?"bold ":""}${s}px "Songti SC","SimSun","Noto Serif SC",serif`;
+  const total=Object.values(st.earn).reduce((a,b)=>a+b,0);
+  const vd = ENDING_VERDICT[S.ending] || {grade:"待　考", lines:["功过未定，且待后人评说。"]};
+  // 纸底与做旧
+  ctx.fillStyle="#f2ecdb"; ctx.fillRect(0,0,W,H);
+  for (let i=0;i<46;i++) { ctx.fillStyle=`rgba(150,120,70,${(0.015+Math.random()*0.03).toFixed(3)})`;
+    ctx.beginPath(); ctx.arc(Math.random()*W,Math.random()*H,8+Math.random()*55,0,7); ctx.fill(); }
+  // 边框
+  ctx.strokeStyle=INK; ctx.lineWidth=6; ctx.strokeRect(26,26,W-52,H-52);
+  ctx.lineWidth=2; ctx.strokeRect(44,44,W-88,H-88);
+  // 右侧竖排题名
+  drawVert(ctx,"功过册",W-118,86,80,INK,16);
+  drawVert(ctx,"宣和三年秋",W-196,96,30,INK2,10);
+  drawVert(ctx,vd.grade.replace("　",""),W-118,86+3*(80+16)+34,44,SEALC,10);
+  // 称号
+  ctx.textAlign="left"; ctx.textBaseline="alphabetic";
+  ctx.fillStyle=SEALC; ctx.font=FONT(92,true);
+  ctx.fillText(S.ending||"未了之局", 88, 190);
+  ctx.fillStyle=INK2; ctx.font=FONT(30);
+  ctx.fillText("临汴州衙 · 快班捕快沈砚 考绩", 92, 244);
+  // 判词
+  ctx.fillStyle=INK; ctx.font=FONT(34);
+  vd.lines.forEach((l,i)=>ctx.fillText(l, 92, 320+i*54));
+  // 分隔
+  ctx.strokeStyle=INK2; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(88,506); ctx.lineTo(W-230,506); ctx.stroke();
+  // 计开
+  ctx.fillStyle=SEALC; ctx.font=FONT(40,true); ctx.fillText("计　开", 92, 570);
+  ctx.fillStyle=INK; ctx.font=FONT(31);
+  const lines=[
+    `一、在城谋生${Math.min(S.day,TOTAL_DAYS)}日，还银${fmt(S.repaid)}${S.debt>0?`，尚欠${fmt(S.debt)}`:"，债契两讫"}。`,
+    `二、断案${st.casesSolved}起，错断${st.casesWrong}起，吃案${st.casesEaten}起${st.bestStreak>=3?`，连破${st.bestStreak}案`:""}。`,
+    `三、进项共计${fmt(total)}——`,
+    `　　破案${fmt(st.earn.case)}　佣工${fmt(st.earn.work)}　行商${fmt(st.earn.trade)}`,
+    `　　铺面${fmt(st.earn.shop)}　灰钱${fmt(st.earn.gray)}　杂项${fmt(st.earn.other)}`,
+    `四、佣工${st.workCnt}回${st.saltSold>0?`，贩私盐${st.saltSold}担`:""}，恶名${S.infamy}。`,
+    `五、卧床${st.sickDays}日，违约${st.violations}次，主线${S.mainState==="done"?"功成":S.mainState==="dead"?"断于中道":`行至第${S.mainAct+1}幕`}。`,
+  ];
+  lines.forEach((l,i)=>ctx.fillText(l, 92, 634+i*56));
+  // 人情
+  ctx.fillStyle=SEALC; ctx.font=FONT(40,true); ctx.fillText("人　情", 92, 1090);
+  ctx.fillStyle=INK; ctx.font=FONT(31);
+  const rel1=`秦娘子·${relText(S.npc.qin)}　　柳莺莺·${relText(S.npc.liu)}`;
+  const rel2=`吴师爷·${relText(S.npc.shiye)}　　韩五·${S.npcFlags.hanBetrayed?"被你出首":relText(S.npc.han)}`;
+  ctx.fillText(rel1, 92, 1150); ctx.fillText(rel2, 92, 1204);
+  // 官印
+  ctx.save(); ctx.translate(W-170, H-240); ctx.rotate(-0.1);
+  ctx.strokeStyle=SEALC; ctx.lineWidth=7; ctx.globalAlpha=0.85;
+  ctx.strokeRect(-75,-75,150,150);
+  ctx.fillStyle=SEALC; ctx.font=FONT(56,true); ctx.textAlign="center"; ctx.textBaseline="middle";
+  ctx.fillText("临汴",0,-33); ctx.fillText("縣印",0,33);
+  ctx.restore(); ctx.globalAlpha=1; ctx.textAlign="left"; ctx.textBaseline="alphabetic";
+  // 落款
+  ctx.fillStyle=INK2; ctx.font=FONT(26);
+  ctx.fillText("《我在大宋打工》· 宣和三年 · 临汴城", 92, H-84);
+}
+function showReport() {
+  buildReport();
+  document.getElementById("report").classList.add("show");
+}
+function setupReportBtns() {
+  document.getElementById("r-save").onclick=()=>{
+    const cv=document.getElementById("r-canvas");
+    const a=document.createElement("a");
+    a.download=`我在大宋打工·功过册·${S.ending||"结局"}.png`;
+    a.href=cv.toDataURL("image/png");
+    a.click();
+  };
+  document.getElementById("r-again").onclick=()=>{document.getElementById("report").classList.remove("show");newGame();};
+  document.getElementById("r-close").onclick=()=>{document.getElementById("report").classList.remove("show");render();};
 }
 
 /* ================= 界面 ================= */
@@ -1160,6 +1456,9 @@ function render() {
   const ledger=document.createElement("button");
   ledger.textContent="账本·还款"; ledger.className="seal"; ledger.disabled=S.over; ledger.onclick=openLedger;
   locBox.appendChild(ledger);
+  const rel=document.createElement("button");
+  rel.textContent="人情簿"; rel.disabled=S.over; rel.onclick=openRelations;
+  locBox.appendChild(rel);
   document.getElementById("loc-title").textContent=LOCATIONS.find(l=>l.id===S.loc).name;
   document.getElementById("scene").innerHTML =
     ART_OVERRIDE[S.loc] ? `<img src="${ART_OVERRIDE[S.loc]}" alt="">` : (SCENES[S.loc]||"");
@@ -1176,7 +1475,7 @@ function render() {
     b.disabled=S.over||!a.can();
     b.onclick=()=>doAction(a);
     const hint=document.createElement("span");
-    hint.className="hint"; hint.textContent=" "+a.hint;
+    hint.className="hint"; hint.textContent=" "+(typeof a.hint==="function"?a.hint():a.hint);
     wrap.appendChild(b); wrap.appendChild(hint);
     actBox.appendChild(wrap);
   });
@@ -1195,8 +1494,9 @@ const ENDING_ART = {"青天捕头":"end_repaid","笑面阎罗":"end_repaid","革
 function modal(title,text,ended){
   if (ended) {
     const t = title.replace(/^结局·/,"");
+    S.ending = t.replace(/（.*）$/,""); // 去掉「（隐藏）」等后缀，功过册判词按净称号匹配
     const key = Object.keys(ENDING_ART).find(k=>t.startsWith(k));
-    cinematic(t, text, "剧终", "再来一局", ()=>{hideCine(); newGame();}, key?ENDING_ART[key]:null);
+    cinematic(t, text, "剧终", "功过册 · 存图分享", ()=>{hideCine(); showReport();}, key?ENDING_ART[key]:null);
     return;
   }
   modalBtns(title,text,[{text:"知道了",fn:closeModal}]);
@@ -1231,6 +1531,7 @@ window.__dbg = { get S(){return S}, repay, advanceSlot, doAction, gainInfamy,
   caseInvestigate, caseAccuse, mainInvestigate, yamenActions, ACTIONS, GOODS, MAIN_ACTS, CASE_POOL,
   pickCase:()=>{S.caseTpl=pickCase();}, finale, openTrade };
 
+setupReportBtns();
 newGame();
 </script>
 </body>
