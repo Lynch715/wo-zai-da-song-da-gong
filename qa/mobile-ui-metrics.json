@@ -1,0 +1,22 @@
+{
+  "beforeShop": {
+    "width": 390,
+    "height": 844,
+    "pageHeight": 1096,
+    "pageWidth": 390,
+    "actionsY": 453.5
+  },
+  "afterShop": {
+    "actionsY": 239.890625,
+    "height": 844,
+    "pageHeight": 844,
+    "pageWidth": 390,
+    "width": 390
+  },
+  "afterCase": {
+    "height": 667,
+    "pageHeight": 667,
+    "pageWidth": 320,
+    "width": 320
+  }
+}

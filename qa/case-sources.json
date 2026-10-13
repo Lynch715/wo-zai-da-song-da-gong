@@ -1,0 +1,206 @@
+{
+  "repository": "NiuTrans/Classical-Modern",
+  "retrieved": "2026-10-13",
+  "cases": [
+    {
+      "game_case": "碎饼索赔案",
+      "theme": "称重核数",
+      "source_book": "折狱龟鉴",
+      "source_article": "183、孙宝称馓",
+      "source_path": "古文原文/折狱龟鉴/卷六·证慝/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E8%AF%81%E6%85%9D/text.txt",
+      "source_blob_sha": "5e92693577c992044a5f90e47fc63b71f93901a5",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "树下羊皮案",
+      "theme": "物件残留",
+      "source_book": "折狱龟鉴",
+      "source_article": "187、李惠拷皮",
+      "source_path": "古文原文/折狱龟鉴/卷六·证慝/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E8%AF%81%E6%85%9D/text.txt",
+      "source_blob_sha": "5e92693577c992044a5f90e47fc63b71f93901a5",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "针铺丝团案",
+      "theme": "微屑辨物",
+      "source_book": "折狱龟鉴",
+      "source_article": "187、李惠拷皮附傅琰",
+      "source_path": "古文原文/折狱龟鉴/卷六·证慝/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E8%AF%81%E6%85%9D/text.txt",
+      "source_blob_sha": "5e92693577c992044a5f90e47fc63b71f93901a5",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "芦花鸡争主案",
+      "theme": "喂养记录",
+      "source_book": "折狱龟鉴",
+      "source_article": "185、傅琰破嗉",
+      "source_path": "古文原文/折狱龟鉴/卷六·证慝/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E8%AF%81%E6%85%9D/text.txt",
+      "source_blob_sha": "5e92693577c992044a5f90e47fc63b71f93901a5",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "青菜墨字案",
+      "theme": "预留标记",
+      "source_book": "折狱龟鉴",
+      "source_article": "215、高浟市脯附书菜",
+      "source_path": "古文原文/折狱龟鉴/卷七·迹盗/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E4%B8%83%C2%B7%E8%BF%B9%E7%9B%97/text.txt",
+      "source_blob_sha": "ee2ac8a2d6b73bee98663ec56d3d1896bd12f79f",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "鹿脯换签案",
+      "theme": "追查销赃",
+      "source_book": "折狱龟鉴",
+      "source_article": "215、高浟市脯",
+      "source_path": "古文原文/折狱龟鉴/卷七·迹盗/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E4%B8%83%C2%B7%E8%BF%B9%E7%9B%97/text.txt",
+      "source_blob_sha": "ee2ac8a2d6b73bee98663ec56d3d1896bd12f79f",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "河边旧靴案",
+      "theme": "修补辨物",
+      "source_book": "折狱龟鉴",
+      "source_article": "216、高湝留靴",
+      "source_path": "古文原文/折狱龟鉴/卷七·迹盗/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E4%B8%83%C2%B7%E8%BF%B9%E7%9B%97/text.txt",
+      "source_blob_sha": "ee2ac8a2d6b73bee98663ec56d3d1896bd12f79f",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "雪夜木栏案",
+      "theme": "失物用途",
+      "source_book": "折狱龟鉴",
+      "source_article": "201、曹摅察理",
+      "source_path": "古文原文/折狱龟鉴/卷七·察盗/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E4%B8%83%C2%B7%E5%AF%9F%E7%9B%97/text.txt",
+      "source_blob_sha": "060553a794007e3a3af8c261fb1268c4132ee61d",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "船底银匣案",
+      "theme": "藏物位置",
+      "source_book": "折狱龟鉴",
+      "source_article": "209、阎济美料银",
+      "source_path": "古文原文/折狱龟鉴/卷七·察盗/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E4%B8%83%C2%B7%E5%AF%9F%E7%9B%97/text.txt",
+      "source_blob_sha": "060553a794007e3a3af8c261fb1268c4132ee61d",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "失印又现案",
+      "theme": "借物留下用途",
+      "source_book": "折狱龟鉴",
+      "source_article": "208、裴度待印",
+      "source_path": "古文原文/折狱龟鉴/卷七·察盗/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E4%B8%83%C2%B7%E5%AF%9F%E7%9B%97/text.txt",
+      "source_blob_sha": "060553a794007e3a3af8c261fb1268c4132ee61d",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "庙钟验贼案",
+      "theme": "试探与赃证",
+      "source_book": "折狱龟鉴",
+      "source_article": "222、陈述古祠钟",
+      "source_path": "古文原文/折狱龟鉴/卷七·谲盗/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E4%B8%83%C2%B7%E8%B0%B2%E7%9B%97/text.txt",
+      "source_blob_sha": "f658aae7e2c1d8ab3f75bbac67929fc25bd64539",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "瓦袋换骡案",
+      "theme": "袋内调包",
+      "source_book": "折狱龟鉴",
+      "source_article": "219、高谦之枷囚",
+      "source_path": "古文原文/折狱龟鉴/卷七·谲盗/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E4%B8%83%C2%B7%E8%B0%B2%E7%9B%97/text.txt",
+      "source_blob_sha": "f658aae7e2c1d8ab3f75bbac67929fc25bd64539",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "衣带割钱案",
+      "theme": "切口与工具",
+      "source_book": "折狱龟鉴",
+      "source_article": "213、彭思永黥盗",
+      "source_path": "古文原文/折狱龟鉴/卷七·察盗/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E4%B8%83%C2%B7%E5%AF%9F%E7%9B%97/text.txt",
+      "source_blob_sha": "060553a794007e3a3af8c261fb1268c4132ee61d",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "匿名诬状案",
+      "theme": "匿名笔迹",
+      "source_book": "折狱龟鉴",
+      "source_article": "154、国渊比书附王安礼",
+      "source_path": "古文原文/折狱龟鉴/卷六·核奸/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E6%A0%B8%E5%A5%B8/text.txt",
+      "source_blob_sha": "5d18e2c5340f38caf69f84ce4c00a753d994bc56",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "田券缺邻案",
+      "theme": "交易见证",
+      "source_book": "折狱龟鉴",
+      "source_article": "166、刘沆问邻",
+      "source_path": "古文原文/折狱龟鉴/卷六·核奸/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E6%A0%B8%E5%A5%B8/text.txt",
+      "source_blob_sha": "5d18e2c5340f38caf69f84ce4c00a753d994bc56",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "药册认亲案",
+      "theme": "年代矛盾",
+      "source_book": "折狱龟鉴",
+      "source_article": "168、程颢校年",
+      "source_path": "古文原文/折狱龟鉴/卷六·核奸/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E6%A0%B8%E5%A5%B8/text.txt",
+      "source_blob_sha": "5d18e2c5340f38caf69f84ce4c00a753d994bc56",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "地窖古钱案",
+      "theme": "铸钱年代",
+      "source_book": "折狱龟鉴",
+      "source_article": "193、程颢辨钱",
+      "source_path": "古文原文/折狱龟鉴/卷六·证慝/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E8%AF%81%E6%85%9D/text.txt",
+      "source_blob_sha": "5e92693577c992044a5f90e47fc63b71f93901a5",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "染痕索医案",
+      "theme": "伪造伤痕",
+      "source_book": "折狱龟鉴",
+      "source_article": "194、李南公捏痕",
+      "source_path": "古文原文/折狱龟鉴/卷六·证慝/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E8%AF%81%E6%85%9D/text.txt",
+      "source_blob_sha": "5e92693577c992044a5f90e47fc63b71f93901a5",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "邸店两本账案",
+      "theme": "交叉核账",
+      "source_book": "折狱龟鉴",
+      "source_article": "155、韦皋验簿",
+      "source_path": "古文原文/折狱龟鉴/卷六·核奸/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E6%A0%B8%E5%A5%B8/text.txt",
+      "source_blob_sha": "5d18e2c5340f38caf69f84ce4c00a753d994bc56",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    },
+    {
+      "game_case": "高田报涝案",
+      "theme": "实地核查",
+      "source_book": "折狱龟鉴",
+      "source_article": "171、王罕按图",
+      "source_path": "古文原文/折狱龟鉴/卷六·核奸/text.txt",
+      "source_url": "https://github.com/NiuTrans/Classical-Modern/blob/main/%E5%8F%A4%E6%96%87%E5%8E%9F%E6%96%87/%E6%8A%98%E7%8B%B1%E9%BE%9F%E9%89%B4/%E5%8D%B7%E5%85%AD%C2%B7%E6%A0%B8%E5%A5%B8/text.txt",
+      "source_blob_sha": "5d18e2c5340f38caf69f84ce4c00a753d994bc56",
+      "adaptation": "古籍原文取材；地点、人名、对白和调查证据为游戏改写；不复制现代译文。"
+    }
+  ]
+}

@@ -1,0 +1,1363 @@
+{
+  "cases": [
+    {
+      "name": "布庄失窃案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 0,
+      "suspects": [
+        "学徒小乙",
+        "更夫老周",
+        "泼皮牛三"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 1
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "瓦子斗殴案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 2,
+      "suspects": [
+        "说书人",
+        "卖炊饼的武大",
+        "外乡客商"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 1
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "割牛舌案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 0,
+      "suspects": [
+        "有宿怨的邻人",
+        "过路牛贩",
+        "流窜的泼皮"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 1
+      },
+      "clueCount": 5
+    },
+    {
+      "name": "油钱失窃案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 1,
+      "suspects": [
+        "歇脚的挑夫",
+        "桥头的闲汉",
+        "过路的货郎"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 1
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "偷鹅案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 1,
+      "suspects": [
+        "隔壁孙寡妇",
+        "挑担的货郎",
+        "屠户学徒"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 1
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "醉汉坠河案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 2,
+      "suspects": [
+        "同饮的船工",
+        "讨债的泼皮",
+        "并非人为，是失足"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 0
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "假香油案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 1,
+      "suspects": [
+        "城南油坊主",
+        "串巷的油贩",
+        "油坊伙计"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 1
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "碰瓷讹车案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 0,
+      "suspects": [
+        "倒地的老汉",
+        "赶车的脚夫",
+        "路边起哄的闲人"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 0
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "鱼行短秤案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 0,
+      "suspects": [
+        "鱼牙子",
+        "做秤的秤匠",
+        "鱼行伙计"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 1
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "骡马失窃案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 0,
+      "suspects": [
+        "马行牙人",
+        "邻家屠户",
+        "流民汉子"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "当铺收赃案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 1,
+      "suspects": [
+        "当铺掌柜",
+        "当铺伙计",
+        "来当东西的婆子"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "功德箱失窃案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 0,
+      "suspects": [
+        "庙祝",
+        "上香的里正",
+        "山门外的乞儿"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 0
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "十五贯疑案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 1,
+      "suspects": [
+        "死者女儿的相好",
+        "赌坊的娄二",
+        "肉案合伙人"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 3
+      },
+      "clueCount": 5
+    },
+    {
+      "name": "乌盆案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 0,
+      "suspects": [
+        "城外窑户",
+        "同行的客商",
+        "赶脚的车夫"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 1
+      },
+      "clueCount": 5
+    },
+    {
+      "name": "双钉案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 0,
+      "suspects": [
+        "死者的浑家",
+        "死者的兄弟",
+        "游方郎中"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 1
+      },
+      "clueCount": 5
+    },
+    {
+      "name": "灰阑争子案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 1,
+      "suspects": [
+        "先松手的张氏",
+        "抢到娃的李氏",
+        "过路的牙婆"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 5
+    },
+    {
+      "name": "审驴案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 1,
+      "suspects": [
+        "驴行牙人",
+        "同槽的赶脚汉",
+        "盗驴惯犯"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 1
+      },
+      "clueCount": 5
+    },
+    {
+      "name": "供银失踪案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 0,
+      "suspects": [
+        "观音庙住持",
+        "看殿的庙祝",
+        "挂单的行脚僧"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "花轿失箱案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 1,
+      "suspects": [
+        "轿夫头",
+        "跟轿的媒婆",
+        "男方管家"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 1
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "井中尸案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 1,
+      "suspects": [
+        "同院的租客",
+        "淘井的井匠",
+        "死者的赌友"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 0
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "移尸讹诈案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 0,
+      "suspects": [
+        "死者的族叔",
+        "街面的地头蛇",
+        "对门的绸缎庄对头"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 0
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "夹铜银铤案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 1,
+      "suspects": [
+        "来当银的行商",
+        "城西银铺匠人",
+        "当铺朝奉"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "冒继绝产案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 0,
+      "suspects": [
+        "自称侄儿的后生",
+        "隔壁邻人",
+        "写保书的牙保"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 1
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "拐骗孩童案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 2,
+      "suspects": [
+        "耍猴的班主",
+        "行脚僧",
+        "西巷王婆"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 5
+    },
+    {
+      "name": "私盐案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 1,
+      "suspects": [
+        "盐铺东家",
+        "漕船船头",
+        "城外灶户"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "药铺假药案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 1,
+      "suspects": [
+        "药铺东家",
+        "坐堂郎中",
+        "采药人"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "负心书生案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 0,
+      "suspects": [
+        "新科的秦相公",
+        "岳家的管家",
+        "渡口艄公"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 1
+      },
+      "clueCount": 5
+    },
+    {
+      "name": "科场鬻题案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 1,
+      "suspects": [
+        "州学教授",
+        "誊录的书吏",
+        "应试的贡生"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "库银调包案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 2,
+      "suspects": [
+        "守库的库丁",
+        "押运的厢军",
+        "司库官"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 1
+      },
+      "clueCount": 5
+    },
+    {
+      "name": "真假遗嘱案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 1,
+      "suspects": [
+        "据产的长子",
+        "幼子的塾师",
+        "管家"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 5
+    },
+    {
+      "name": "邸店纵火案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 2,
+      "suspects": [
+        "邸店店主",
+        "同宿的客人",
+        "客商的伙计"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "盗掘古冢案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 2,
+      "suspects": [
+        "守坟户",
+        "游方道士",
+        "城南石匠"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "毒杀讼师案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 2,
+      "suspects": [
+        "对头讼师",
+        "输了官司的苦主",
+        "讼师的书童"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "花石纲劫案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 2,
+      "suspects": [
+        "押纲使臣",
+        "水寨匪首",
+        "纲船梢公"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 1
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "冒官行骗案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 1,
+      "suspects": [
+        "自称钦差的贵人",
+        "随行的师爷",
+        "接待的驿丞"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "晒衣失窃案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 2,
+      "suspects": [
+        "同院的绣娘",
+        "收荒货的老汉",
+        "房东的小舅子"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 1
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "酒肆赖账案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 1,
+      "suspects": [
+        "行商打扮的食客",
+        "本地帮闲",
+        "邻桌的太学生"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 0
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "渡口失包案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 0,
+      "suspects": [
+        "摆渡的艄公",
+        "同船的货郎",
+        "岸边接客的闲汉"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 0
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "寿宴失盏案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 2,
+      "suspects": [
+        "帮厨的婆子",
+        "唱曲的女先儿",
+        "借来的跑堂"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 1
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "香料掉包案",
+      "diff": 1,
+      "reward": 3000,
+      "culprit": 1,
+      "suspects": [
+        "香药铺掌柜",
+        "代客送货的脚夫",
+        "买主家的门房"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 1
+      },
+      "clueCount": 2
+    },
+    {
+      "name": "古画赝品案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 1,
+      "suspects": [
+        "书画铺东家",
+        "装裱匠",
+        "牵线的中人"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "义庄换棺案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 2,
+      "suspects": [
+        "守义庄的老仆",
+        "扛棺的杠夫",
+        "丧家的远亲"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "绣坊窃样案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 1,
+      "suspects": [
+        "绣坊的大师傅",
+        "新来的绣娘",
+        "对街绣庄的东家"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "典妻讹诈案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 0,
+      "suspects": [
+        "典妻的赌汉",
+        "受典的绸商",
+        "保媒的媒婆"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "社仓亏空案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 1,
+      "suspects": [
+        "管仓的社首",
+        "量米的斗子",
+        "借粮的甲头"
+      ],
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "僧房藏妇案",
+      "diff": 2,
+      "reward": 5000,
+      "culprit": 0,
+      "suspects": [
+        "寺里的知客僧",
+        "挂单的游方僧",
+        "寺外的樵夫"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "漕粮掺沙案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 0,
+      "suspects": [
+        "兑运的粮长",
+        "碾坊主",
+        "押运的军校"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "当票冒领案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 2,
+      "suspects": [
+        "死者的外甥",
+        "当铺朝奉",
+        "代写当票的先生"
+      ],
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "闸官溺毙案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 0,
+      "suspects": [
+        "夜里过闸的盐船纲首",
+        "闸夫",
+        "闸官的继室"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "贡绫染血案",
+      "diff": 3,
+      "reward": 8000,
+      "culprit": 0,
+      "suspects": [
+        "织造行会首",
+        "收绫的行商",
+        "库房力夫"
+      ],
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "碎饼索赔案",
+      "diff": 1,
+      "reward": 3000,
+      "leisureOnly": true,
+      "theme": "称重核数",
+      "culprit": 0,
+      "suspects": [
+        "饼贩董六",
+        "挑夫常顺",
+        "过秤的伙计"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·证慝",
+        "article": "183、孙宝称馓",
+        "path": "古文原文/折狱龟鉴/卷六·证慝/text.txt"
+      },
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "树下羊皮案",
+      "diff": 1,
+      "reward": 3000,
+      "leisureOnly": true,
+      "theme": "物件残留",
+      "culprit": 1,
+      "suspects": [
+        "负盐的贺九",
+        "负柴的余四",
+        "树下茶翁"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·证慝",
+        "article": "187、李惠拷皮",
+        "path": "古文原文/折狱龟鉴/卷六·证慝/text.txt"
+      },
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "针铺丝团案",
+      "diff": 1,
+      "reward": 3000,
+      "leisureOnly": true,
+      "theme": "微屑辨物",
+      "culprit": 2,
+      "suspects": [
+        "穿线学徒",
+        "卖针的方婆",
+        "卖糖的陶婆"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·证慝",
+        "article": "187、李惠拷皮附傅琰",
+        "path": "古文原文/折狱龟鉴/卷六·证慝/text.txt"
+      },
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "芦花鸡争主案",
+      "diff": 1,
+      "reward": 3000,
+      "leisureOnly": true,
+      "theme": "喂养记录",
+      "culprit": 1,
+      "suspects": [
+        "种粟的邹嫂",
+        "卖豆的鲁三",
+        "草市鸡贩"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·证慝",
+        "article": "185、傅琰破嗉",
+        "path": "古文原文/折狱龟鉴/卷六·证慝/text.txt"
+      },
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "青菜墨字案",
+      "diff": 1,
+      "reward": 3000,
+      "leisureOnly": true,
+      "theme": "预留标记",
+      "culprit": 2,
+      "suspects": [
+        "菜农的侄儿",
+        "邻村的菜贩",
+        "临时帮工梁七"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷七·迹盗",
+        "article": "215、高浟市脯附书菜",
+        "path": "古文原文/折狱龟鉴/卷七·迹盗/text.txt"
+      },
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "鹿脯换签案",
+      "diff": 2,
+      "reward": 5000,
+      "leisureOnly": true,
+      "theme": "追查销赃",
+      "culprit": 0,
+      "suspects": [
+        "同行脚夫丁旺",
+        "肉铺掌柜",
+        "驿店马夫"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷七·迹盗",
+        "article": "215、高浟市脯",
+        "path": "古文原文/折狱龟鉴/卷七·迹盗/text.txt"
+      },
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "河边旧靴案",
+      "diff": 1,
+      "reward": 3000,
+      "leisureOnly": true,
+      "theme": "修补辨物",
+      "culprit": 1,
+      "suspects": [
+        "骑骡的药贩",
+        "骑马的齐二",
+        "步行的塾师"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷七·迹盗",
+        "article": "216、高湝留靴",
+        "path": "古文原文/折狱龟鉴/卷七·迹盗/text.txt"
+      },
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "雪夜木栏案",
+      "diff": 1,
+      "reward": 3000,
+      "leisureOnly": true,
+      "theme": "失物用途",
+      "culprit": 2,
+      "suspects": [
+        "库房木匠",
+        "送炭的脚夫",
+        "巡夜的贺班头"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷七·察盗",
+        "article": "201、曹摅察理",
+        "path": "古文原文/折狱龟鉴/卷七·察盗/text.txt"
+      },
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "船底银匣案",
+      "diff": 2,
+      "reward": 5000,
+      "leisureOnly": true,
+      "theme": "藏物位置",
+      "culprit": 0,
+      "suspects": [
+        "船夫何三",
+        "同船茶商",
+        "泊岸的渔户"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷七·察盗",
+        "article": "209、阎济美料银",
+        "path": "古文原文/折狱龟鉴/卷七·察盗/text.txt"
+      },
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "失印又现案",
+      "diff": 2,
+      "reward": 5000,
+      "leisureOnly": true,
+      "theme": "借物留下用途",
+      "culprit": 1,
+      "suspects": [
+        "掌印书吏",
+        "跑驿的陆八",
+        "扫房的小童"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷七·察盗",
+        "article": "208、裴度待印",
+        "path": "古文原文/折狱龟鉴/卷七·察盗/text.txt"
+      },
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "庙钟验贼案",
+      "diff": 2,
+      "reward": 5000,
+      "leisureOnly": true,
+      "theme": "试探与赃证",
+      "culprit": 2,
+      "suspects": [
+        "香客孟老",
+        "帮厨赵婶",
+        "看殿的小范"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷七·谲盗",
+        "article": "222、陈述古祠钟",
+        "path": "古文原文/折狱龟鉴/卷七·谲盗/text.txt"
+      },
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "瓦袋换骡案",
+      "diff": 2,
+      "reward": 5000,
+      "leisureOnly": true,
+      "theme": "袋内调包",
+      "culprit": 0,
+      "suspects": [
+        "买客薛发",
+        "马行牙人",
+        "同行布商"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷七·谲盗",
+        "article": "219、高谦之枷囚",
+        "path": "古文原文/折狱龟鉴/卷七·谲盗/text.txt"
+      },
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "衣带割钱案",
+      "diff": 2,
+      "reward": 5000,
+      "leisureOnly": true,
+      "theme": "切口与工具",
+      "culprit": 1,
+      "suspects": [
+        "看戏的泼皮",
+        "修甲匠侯五",
+        "卖灯的少女"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷七·察盗",
+        "article": "213、彭思永黥盗",
+        "path": "古文原文/折狱龟鉴/卷七·察盗/text.txt"
+      },
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "匿名诬状案",
+      "diff": 2,
+      "reward": 5000,
+      "leisureOnly": true,
+      "theme": "匿名笔迹",
+      "culprit": 0,
+      "suspects": [
+        "代写状子的马青",
+        "米铺伙计",
+        "买米的客商"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·核奸",
+        "article": "154、国渊比书附王安礼",
+        "path": "古文原文/折狱龟鉴/卷六·核奸/text.txt"
+      },
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "田券缺邻案",
+      "diff": 3,
+      "reward": 8000,
+      "leisureOnly": true,
+      "theme": "交易见证",
+      "culprit": 2,
+      "suspects": [
+        "守田的兄长",
+        "当年里正",
+        "持券的郑员外"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·核奸",
+        "article": "166、刘沆问邻",
+        "path": "古文原文/折狱龟鉴/卷六·核奸/text.txt"
+      },
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "药册认亲案",
+      "diff": 3,
+      "reward": 8000,
+      "leisureOnly": true,
+      "theme": "年代矛盾",
+      "culprit": 1,
+      "suspects": [
+        "富户的独子",
+        "游方郎中裴翁",
+        "旧日乳母"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·核奸",
+        "article": "168、程颢校年",
+        "path": "古文原文/折狱龟鉴/卷六·核奸/text.txt"
+      },
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "地窖古钱案",
+      "diff": 3,
+      "reward": 8000,
+      "leisureOnly": true,
+      "theme": "铸钱年代",
+      "culprit": 0,
+      "suspects": [
+        "房东的侄儿",
+        "翻修的租客",
+        "旧租客申老"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·证慝",
+        "article": "193、程颢辨钱",
+        "path": "古文原文/折狱龟鉴/卷六·证慝/text.txt"
+      },
+      "contra": {
+        "s": 0,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "染痕索医案",
+      "diff": 1,
+      "reward": 3000,
+      "leisureOnly": true,
+      "theme": "伪造伤痕",
+      "culprit": 2,
+      "suspects": [
+        "茶肆掌柜",
+        "争座的周客",
+        "索赔的田二"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·证慝",
+        "article": "194、李南公捏痕",
+        "path": "古文原文/折狱龟鉴/卷六·证慝/text.txt"
+      },
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "邸店两本账案",
+      "diff": 2,
+      "reward": 5000,
+      "leisureOnly": true,
+      "theme": "交叉核账",
+      "culprit": 1,
+      "suspects": [
+        "病中的客商",
+        "邸店店主宋四",
+        "值夜的伙计"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·核奸",
+        "article": "155、韦皋验簿",
+        "path": "古文原文/折狱龟鉴/卷六·核奸/text.txt"
+      },
+      "contra": {
+        "s": 1,
+        "c": 2
+      },
+      "clueCount": 3
+    },
+    {
+      "name": "高田报涝案",
+      "diff": 2,
+      "reward": 5000,
+      "leisureOnly": true,
+      "theme": "实地核查",
+      "culprit": 2,
+      "suspects": [
+        "低田的许农",
+        "绘图的老丈",
+        "报涝的冯庄主"
+      ],
+      "source": {
+        "book": "折狱龟鉴",
+        "chapter": "卷六·核奸",
+        "article": "171、王罕按图",
+        "path": "古文原文/折狱龟鉴/卷六·核奸/text.txt"
+      },
+      "contra": {
+        "s": 2,
+        "c": 2
+      },
+      "clueCount": 3
+    }
+  ],
+  "main": [
+    {
+      "name": "漕船失货案",
+      "reward": 8000,
+      "unlock": 1,
+      "suspects": [
+        "仓吏赵四",
+        "船工王五",
+        "牙人钱六"
+      ],
+      "culprit": 0,
+      "grayGain": 15000,
+      "grayInfamy": 10,
+      "contra": {
+        "s": 0,
+        "c": 3
+      }
+    },
+    {
+      "name": "赌坊假账案",
+      "reward": 10000,
+      "unlock": 8,
+      "suspects": [
+        "账房遗孀",
+        "赌坊打手",
+        "金府管家"
+      ],
+      "culprit": 2,
+      "grayGain": 24000,
+      "grayInfamy": 10,
+      "contra": {
+        "s": 2,
+        "c": 3
+      }
+    },
+    {
+      "name": "泗州访故人",
+      "reward": 10000,
+      "unlock": 14,
+      "suspects": [
+        "赌坊掌柜柳三",
+        "放印子的牙人",
+        "周二郎自己"
+      ],
+      "culprit": 0,
+      "grayGain": 30000,
+      "grayInfamy": 10,
+      "contra": {
+        "s": 0,
+        "c": 4
+      }
+    },
+    {
+      "name": "衙里的耳目",
+      "reward": 12000,
+      "unlock": 20,
+      "suspects": [
+        "押司孔目",
+        "值堂的老兵",
+        "司理院的书吏"
+      ],
+      "culprit": 0,
+      "grayGain": 40000,
+      "grayInfamy": 15,
+      "contra": {
+        "s": 0,
+        "c": 1
+      }
+    },
+    {
+      "name": "金满堂罪证",
+      "reward": 20000,
+      "unlock": 25,
+      "suspects": null,
+      "culprit": -1,
+      "grayGain": 50000,
+      "grayInfamy": 15
+    }
+  ]
+}

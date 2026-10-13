@@ -1,0 +1,23 @@
+{
+  "atBottom": true,
+  "buttons": [
+    {
+      "bottom": 591.796875,
+      "text": "回案簿",
+      "top": 545.796875
+    },
+    {
+      "bottom": 591.796875,
+      "text": "合上案簿",
+      "top": 545.796875
+    }
+  ],
+  "clientHeight": 563,
+  "horizontalOverflow": false,
+  "scrollHeight": 824,
+  "scrollTop": 261,
+  "viewport": {
+    "height": 667,
+    "width": 320
+  }
+}

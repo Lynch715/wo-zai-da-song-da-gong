@@ -1,0 +1,17 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>大宋游戏 · 本机验收场景</title><style>body{margin:0;background:#eee;font:14px serif}aside{padding:8px;display:flex;gap:8px;flex-wrap:wrap}button{padding:8px}iframe{display:block;width:100%;height:calc(100vh - 85px);border:0}#result{padding:4px 8px}</style>
+<aside><button id="repay">准备还债场景</button><button id="case">准备新案场景</button><button id="shop">准备店铺场景</button><button id="later">准备第30日场景</button><button id="hidden">准备隐藏结局</button></aside><div id="result">仅本机验收夹具，操作实际游戏文件。</div><iframe id="game" src="../game.html?qa=1" title="实际游戏"></iframe>
+<script>
+const frame=document.getElementById('game');
+function setup(kind){
+ const w=frame.contentWindow,d=w.__dbg;w.document.getElementById('overlay').classList.remove('show');w.document.getElementById('report').classList.remove('show');
+ d.newGame('bu');d.hideCine();const s=d.S;s.money=150000;s.day=29;s.slot=0;s.stamina=100;s.npc.qin=65;s.npcFlags.qinEvt1=true;s.npcFlags.qinEvt2=true;
+ if(kind!=='repay'&&kind!=='hidden'){s.debt=0;d.finale();d.hideCine();}
+ if(kind==='case'){s.loc='yamen';s.caseTpl=d.LEISURE_CASES[0];s.caseClue=0;s.skill.eye=8;}
+ if(kind==='shop'){s.loc='tea';s.shopTea=2;s.shopHerb=2;s.shopCasino=2;s.shopLevel={tea:0,casino:0,herb:0};}
+ if(kind==='later'){s.day=30;s.slot=2;s.loc='home';}
+ if(kind==='hidden'){d.mainFinale();}
+ d.saveGame();if(kind!=='hidden')d.closeModal();
+ document.getElementById('result').textContent='场景就绪：'+kind+'。以下为实际游戏界面。';
+}
+for(const k of ['repay','case','shop','later','hidden'])document.getElementById(k).onclick=()=>setup(k);
+</script></html>
