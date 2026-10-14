@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我在大宋打工 v1.4.3 · 临汴日常</title>
+<title>我在大宋打工 v1.4.4 · 临汴日常</title>
 <style>
   :root { --paper:#f5f0e6; --ink:#2b2b2b; --seal:#a03028; --dim:#8a8378; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -201,20 +201,204 @@
     #modal .btns { position:sticky; bottom:-14px; padding:9px 0; background:var(--paper); border-top:1px solid var(--dim); }
   }
 
+  /* v1.4.4 · 宣纸案牍：页面与操作卡片，沿用已有水墨资源。 */
+  :root { --paper:#f5f0e6; --sheet:#fffcf5; --ink:#293c40; --blue:#304c56; --seal:#984a37;
+          --dim:#746b5e; --line:#d9cebb; --soft:#eae3d6; --shadow:rgba(47,40,26,.12); }
+  body { background:#eae4d8; padding:20px; align-items:flex-start;
+         font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; }
+  #app { max-width:840px; border:1px solid var(--line); border-radius:12px; overflow:hidden;
+         box-shadow:0 8px 32px var(--shadow); background-color:var(--paper);
+         background-image:radial-gradient(rgba(136,116,90,.09) .45px,transparent .6px); background-size:5px 6px; }
+  header { padding:16px 18px 10px; gap:10px; border:0; flex-wrap:nowrap; align-items:center; }
+  .brand-mark { display:grid; place-items:center; flex:0 0 29px; height:32px; border-radius:2px;
+                color:var(--sheet); background:var(--blue); font:20px "Songti SC","SimSun",serif; transform:rotate(-4deg); }
+  header h1 { margin-right:auto; font:500 23px/1.3 "Songti SC","SimSun",serif; letter-spacing:1px; }
+  header .day { font-size:12px; font-weight:500; color:var(--seal); text-align:right; line-height:1.6; }
+  header .day .day-period { display:block; color:var(--dim); font-size:11px; }
+  header .day .day-value { display:block; white-space:nowrap; }
+  .status-bar { border:0; }
+  #stats { padding:2px 18px 12px; gap:8px 26px; font-size:12px; }
+  #stats span { display:flex; align-items:baseline; gap:6px; color:var(--dim); }
+  #stats b { color:var(--ink); font-size:16px; font-weight:500; font-variant-numeric:tabular-nums; }
+  #status-fold { margin-right:14px; }
+  #stats-more { background:var(--sheet); border-color:var(--line); border-radius:5px; box-shadow:0 5px 16px var(--shadow); }
+  #stats-more b { font-weight:500; }
+  #debtline { padding:8px 18px; background:var(--soft); border:0; font-size:12px; line-height:1.6; }
+  main { min-height:0; }
+  #locations { width:145px; padding:14px 10px; border-right:1px solid var(--line); border-bottom:0; }
+  #locations > details > summary { border:0; font-size:12px; color:var(--dim); }
+  #locations button { border-color:var(--line); background:var(--sheet); border-radius:4px; min-height:44px; }
+  #locations button[aria-current="location"] { background:var(--blue); color:var(--sheet); border-color:var(--blue); }
+  button { border-color:var(--line); border-radius:4px; background:var(--sheet); min-height:44px;
+           transition:background-color .15s,color .15s,box-shadow .15s; overflow-wrap:anywhere; }
+  button:hover:not(:disabled) { color:var(--ink); background:var(--soft); }
+  button:active:not(:disabled) { box-shadow:inset 0 1px 3px var(--shadow); }
+  button:disabled { opacity:.58; color:var(--dim); border-color:var(--line); }
+  button.seal { background:var(--blue); color:var(--sheet); border-color:var(--blue); }
+  button.seal:hover:not(:disabled) { background:#243c46; color:var(--sheet); }
+  #panel { padding:14px; }
+  #scene-fold { margin-bottom:15px; }
+  #scene-fold > summary { display:none; }
+  #scene { position:relative; height:108px; border:0; border-radius:5px; margin:0; }
+  #scene-art { height:100%; }
+  #scene-art > img { opacity:.9; }
+  #scene::after { content:""; position:absolute; inset:0; pointer-events:none;
+                   background:linear-gradient(90deg,rgba(37,46,43,.8),rgba(37,46,43,.25) 65%,transparent); }
+  #scene-caption { position:absolute; inset:0; display:flex; align-items:center; gap:10px; padding:14px 17px; z-index:1; color:var(--sheet); }
+  #panel #loc-title { border:0; margin:0; padding:0; min-height:0; font:500 25px/1.3 "Songti SC","SimSun",serif; letter-spacing:3px; color:inherit; }
+  #loc-sub { margin-top:5px; font-size:11px; letter-spacing:1px; opacity:.86; }
+  #change-place { display:none; margin-left:auto; background:rgba(37,46,43,.2); border-color:rgba(255,250,240,.55); color:var(--sheet); font-size:12px; white-space:nowrap; }
+  #actions { gap:9px; margin-bottom:8px; }
+  .action-row { display:block; }
+  .action-row button { display:flex; align-items:center; width:100%; gap:11px; padding:12px;
+                       background:var(--sheet); border:1px solid var(--line); text-align:left; box-shadow:0 2px 0 rgba(47,40,26,.04); }
+  .ui-icon { display:flex; align-items:center; justify-content:center; flex:0 0 31px; width:31px; height:31px;
+             border-radius:4px; background:var(--soft); color:var(--blue); }
+  .ui-icon svg,.ui-chevron svg { display:block; width:18px; height:18px; }
+  .action-copy { min-width:0; flex:1; }
+  .action-name { display:block; font-size:14px; font-weight:500; line-height:1.45; }
+  #actions .action-copy .hint { display:block; margin:3px 0 0; font-size:11px; line-height:1.55; color:var(--dim); }
+  .ui-chevron { margin-left:auto; flex:0 0 16px; color:var(--dim); }
+  .action-row .primary-action { background:var(--blue); color:var(--sheet); border-color:var(--blue); box-shadow:0 3px 6px var(--shadow); }
+  .action-row .primary-action:hover:not(:disabled) { background:#243c46; color:var(--sheet); }
+  #actions .primary-action .hint,.primary-action .ui-chevron { color:var(--sheet); opacity:.8; }
+  .primary-action .ui-icon { background:rgba(255,250,240,.13); color:var(--sheet); }
+  .action-note { padding:5px 0; }
+  .action-fold { border:0; border-top:1px solid var(--line); background:transparent; }
+  .action-fold > summary { padding:12px 0; min-height:44px; font-size:12px; color:var(--dim); }
+  .action-fold[open] > summary { border:0; }
+  .fold-actions { padding:0 0 8px; gap:8px; }
+  .case-card { position:relative; padding:14px 15px 0; background:var(--sheet); border:1px solid var(--line);
+               border-radius:5px; box-shadow:0 3px 0 var(--soft); margin-bottom:2px; }
+  .case-card::before { content:""; position:absolute; top:12px; left:-1px; width:3px; height:32px; background:var(--seal); }
+  .case-card-head { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+  .case-card h3 { font:500 20px/1.45 "Songti SC","SimSun",serif; }
+  .case-badge { color:var(--seal); border:1px solid var(--line); border-radius:2px; padding:1px 5px; font-size:11px; }
+  .case-summary { color:var(--dim); font-size:12px; line-height:1.7; margin:8px 0 11px; }
+  .case-meta { display:flex; flex-wrap:wrap; gap:6px 10px; align-items:center; color:var(--dim); font-size:11px; }
+  .case-meta .reward { margin-left:auto; }
+  .clue-dots { display:flex; gap:4px; }
+  .clue-dots span { width:13px; height:4px; border-radius:2px; background:var(--soft); }
+  .clue-dots .known { background:var(--blue); }
+  #actions .case-open { display:flex; align-items:center; justify-content:space-between; width:100%; background:none;
+                       border:0; border-top:1px solid var(--line); border-radius:0; margin-top:10px; padding:10px 0; color:var(--blue); font-size:12px; }
+  #log-fold { border-top:1px solid var(--line); }
+  #log-fold > summary { padding:11px 0; font-size:12px; color:var(--dim); }
+  #log { line-height:1.85; font-size:13px; }
+  #books-fold { background:var(--sheet); border-top:1px solid var(--line); }
+  #books-fold > summary { display:none; }
+  #book-buttons { display:flex; flex-direction:row; gap:4px; padding:5px 12px; }
+  #book-buttons button { display:flex; align-items:center; justify-content:center; flex:1; gap:8px; border:0;
+                         background:transparent; color:var(--dim); padding:8px 3px; font-size:12px; min-width:0; }
+  #book-buttons .ui-icon { flex:0 0 18px; width:18px; height:18px; background:none; color:inherit; }
+  #book-buttons button:hover:not(:disabled) { background:var(--paper); color:var(--blue); }
+  footer { padding:8px 14px; border:0; font-size:11px; line-height:1.5; text-align:center; }
+  #overlay { background:rgba(31,42,40,.43); padding:24px; }
+  #modal { position:relative; background:var(--sheet); border:1px solid var(--line); border-radius:7px;
+           box-shadow:0 12px 35px rgba(31,42,40,.24); padding:23px; max-width:520px; max-height:calc(100dvh - 48px); }
+  #modal::before,#modal::after { content:""; position:absolute; width:12px; height:12px; pointer-events:none; border:solid #88745a; }
+  #modal::before { left:6px; top:6px; border-width:1px 0 0 1px; }
+  #modal::after { right:6px; bottom:6px; border-width:0 1px 1px 0; }
+  #modal h3 { font:500 22px/1.5 "Songti SC","SimSun",serif; color:var(--ink); letter-spacing:1px; padding-right:35px; }
+  #modal.case-notes h3::before { content:"案卷"; display:inline-block; padding:2px 4px; margin-right:9px;
+                               border:1px solid var(--seal); color:var(--seal); font-size:12px; vertical-align:middle; }
+  #modal p { font:15px/1.95 "Songti SC","SimSun",serif; color:var(--ink); margin-bottom:16px; overflow-wrap:anywhere; }
+  #modal .btns { position:sticky; bottom:-23px; padding:12px 0 3px; margin-top:10px;
+                border-top:1px solid var(--line); background:var(--sheet); z-index:2; }
+  #modal .btns button { flex:1 1 auto; min-width:110px; padding:10px 12px; font-size:13px; }
+  #m-text[hidden] { display:none; }
+  .case-sheet-meta { color:var(--dim); font-size:11px; display:flex; flex-wrap:wrap; gap:7px 12px; margin:0 0 14px; }
+  .case-sheet-meta span:last-child { margin-left:auto; }
+  .case-close { position:absolute; right:12px; top:12px; width:44px; padding:10px; border:0; color:var(--dim); background:none; }
+  .case-close svg { width:18px; height:18px; }
+  .case-tabs { display:flex; border-bottom:1px solid var(--line); margin-bottom:17px; }
+  .case-tabs button { flex:1; border:0; border-bottom:2px solid transparent; border-radius:0; padding:9px 5px; color:var(--dim); background:transparent; font-size:13px; }
+  .case-tabs button[aria-selected="true"] { color:var(--blue); border-bottom-color:var(--blue); }
+  .case-page[hidden] { display:none; }
+  .case-evidence { padding:11px 13px; border-left:2px solid var(--blue); border-radius:0 3px 3px 0; background:var(--paper); margin-bottom:11px; }
+  .case-evidence h4 { font-size:11px; font-weight:500; color:var(--blue); margin-bottom:6px; }
+  #modal .case-evidence p { font-size:14px; margin:0; }
+  .case-evidence.locked { border-color:var(--line); }
+  .case-evidence.locked h4,#modal .case-evidence.locked p { color:var(--dim); font-family:inherit; font-size:12px; }
+  .case-person { border-bottom:1px solid var(--line); margin-bottom:10px; }
+  .case-person > summary { display:flex; align-items:center; gap:9px; min-height:46px; font-size:13px; }
+  .case-person > summary::after { margin-left:auto; }
+  .case-avatar { display:grid; place-items:center; flex:0 0 29px; height:29px; border-radius:50%; color:var(--blue); background:var(--soft); font-family:"Songti SC","SimSun",serif; }
+  #modal .case-person p { margin:8px 0 14px 38px; }
+  #modal .case-page > .hint { color:var(--dim); font:12px/1.8 inherit; }
+  table.trade th,table.trade td { border-color:var(--line); }
+  #cine .c-img,#report canvas { border-color:var(--line); border-radius:5px; box-shadow:0 5px 24px var(--shadow); }
+  @media(min-width:561px) {
+    #stats-more { background:transparent; border:0; box-shadow:none; padding:0 18px 10px; }
+  }
+  @media(max-width:560px) {
+    body { padding:7px; min-height:100svh; }
+    #app { border-radius:10px; box-shadow:0 4px 20px var(--shadow); overflow:visible; }
+    header { padding:14px 13px 8px; gap:8px; }
+    header h1 { font-size:19px; letter-spacing:0; }
+    header .day { font-size:11px; max-width:112px; }
+    #stats { padding:3px 13px 11px; gap:6px 16px; }
+    #stats span { display:block; font-size:11px; }
+    #stats b { display:block; font-size:15px; }
+    #stats .stamina-stat b { display:inline; }
+    #stats .stamina-stat .stat-value { display:block; font-size:12px; color:var(--ink); }
+    #stats .money-stat { flex:1; }
+    #status-fold { margin-right:10px; }
+    #stats-more span { font-size:12px; }
+    #debtline { padding:7px 12px; font-size:11px; }
+    #locations { display:block; width:100%; border:0; padding:0; }
+    #nav-fold { border:0!important; }
+    #nav-fold > summary { display:none; }
+    #travel-buttons { grid-template-columns:repeat(3,minmax(0,1fr)); padding:10px 12px 0; }
+    #locations button { min-height:44px; white-space:normal; font-size:12px; }
+    #panel { padding:12px; }
+    #scene { height:96px; }
+    #scene-fold { margin-bottom:14px; }
+    #scene-caption { padding:12px 14px; }
+    #panel #loc-title { font-size:23px; letter-spacing:2px; }
+    #change-place { display:block; padding:7px 9px; }
+    #actions { gap:9px; }
+    #actions .action-row button { padding:11px; }
+    #log { max-height:190px; }
+    #books-fold { position:sticky; bottom:0; z-index:5; }
+    #book-buttons { padding:5px 8px max(7px,env(safe-area-inset-bottom)); }
+    #book-buttons button { flex-direction:column; gap:3px; min-height:49px; font-size:11px; }
+    #overlay { padding:14px 10px; }
+    #modal { padding:20px 17px 14px; max-height:calc(100dvh - 28px); }
+    #modal .btns { bottom:-14px; padding:11px 0 2px; }
+    #modal .btns button { min-width:40%; min-height:44px; padding:10px; }
+    #m-extra { max-width:100%; }
+    footer { padding:7px 8px; }
+  }
+  @media(max-width:360px) {
+    header h1 { font-size:17px; }
+    .brand-mark { flex-basis:25px; height:29px; font-size:18px; }
+    #stats { gap:6px 12px; }
+    #stats b { font-size:14px; }
+    #panel { padding:10px; }
+    #modal { padding-inline:14px; }
+    #modal h3 { font-size:20px; }
+    .case-card { padding:12px 12px 0; }
+    .case-card h3 { font-size:19px; }
+    #panel #loc-title { font-size:21px; letter-spacing:1px; }
+    #loc-sub { letter-spacing:0; }
+  }
+  @media(prefers-reduced-motion:reduce) { button { transition:none; } #cine * { animation:none!important; opacity:1!important; } }
 </style>
 </head>
 <body>
 <div id="app">
-  <header><h1>我在大宋打工</h1><span class="day" id="hdr-day"></span></header>
+  <header><span class="brand-mark" aria-hidden="true">砚</span><h1>我在大宋打工</h1><span class="day" id="hdr-day"></span></header>
   <div class="status-bar"><div id="stats"></div><details id="status-fold"><summary id="status-summary">详情</summary><div id="stats-more"></div></details></div>
   <div id="debtline"></div>
   <main>
-    <nav id="locations" aria-label="去处与簿册"><details id="nav-fold"><summary id="nav-summary">去处</summary><div id="travel-buttons"></div></details><details id="books-fold"><summary>随身簿册</summary><div id="book-buttons"></div></details></nav>
-    <div id="panel"><h2 id="loc-title"></h2><details id="scene-fold"><summary>街景</summary><div id="scene"></div></details><div id="actions"></div><details id="log-fold"><summary><span>近况</span><span id="log-preview">尚无近况</span></summary><div id="log" role="log" aria-label="游戏近况记录"></div></details></div>
+    <nav id="locations" aria-label="去处"><details id="nav-fold"><summary id="nav-summary">去处</summary><div id="travel-buttons"></div></details></nav>
+    <div id="panel"><details id="scene-fold" open><summary>街景</summary><div id="scene"><div id="scene-art"></div><div id="scene-caption"><div><h2 id="loc-title"></h2><p id="loc-sub"></p></div><button id="change-place" type="button" aria-controls="travel-buttons" aria-expanded="false">换个去处</button></div></div></details><div id="actions"></div><details id="log-fold"><summary><span>近况</span><span id="log-preview">尚无近况</span></summary><div id="log" role="log" aria-label="游戏近况记录"></div></details></div>
   </main>
+  <details id="books-fold" open><summary>随身簿册</summary><nav id="book-buttons" aria-label="随身簿册"></nav></details>
   <footer>宣和三年 · 临汴城 ｜ 还债之后，办案经营，日子继续</footer>
 </div>
-<div id="overlay"><div id="modal"><h3 id="m-title"></h3><div id="m-extra"></div><p id="m-text"></p><div class="btns" id="m-btns"></div></div></div>
+<div id="overlay"><div id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title"><h3 id="m-title"></h3><div id="m-extra"></div><p id="m-text"></p><div class="btns" id="m-btns"></div></div></div>
 <div id="cine"><div class="c-wrap"><img class="c-img" id="c-img" alt=""><div class="c-title" id="c-title"></div><div class="c-body" id="c-body"></div><div class="c-seal" id="c-seal"></div><div class="c-btn"><button id="c-btn"></button></div><div class="c-hint">点击任意处可跳过动画</div></div></div>
 <div id="report"><div class="r-wrap"><canvas id="r-canvas" width="900" height="1350"></canvas><div class="r-btns"><button id="r-save" class="seal">存图·发社交媒体</button><button id="r-ach">成就墙</button><button id="r-again">再来一局</button><button id="r-close">收起</button></div></div></div>
 
@@ -3109,12 +3293,65 @@ function showFirstReport(){
   finally { S=live; }
   document.getElementById("report").classList.add("show");
 }
-function openCaseNotes(){
+function openCaseNotes(view){
   const c=S.caseTpl;
   if(!c) return;
-  modal(`案卷·${c.name}`,(c.intro||`【${c.name}】三人各有说辞，查过证据再断。`)+"\n\n【已查线索】\n"+
-    (S.caseClue?c.clues.slice(0,S.caseClue).map((x,i)=>`【${i+1}】${x}`).join("\n\n"):"尚未查到线索。")+
-    (S.caseAsked&&c.say?"\n\n【供词】\n"+c.say.join("\n\n"):""));
+  if(S.caseResult){showCaseResult();return;}
+  const action=yamenActions().find(a=>a.run===(S.caseClue<c.clues.length?caseInvestigate:caseAccuse));
+  const buttons=[{text:"合上案卷",fn:closeModal}];
+  if(action) buttons.push({text:S.caseClue<c.clues.length?"继续查案":"指认真凶",seal:true,
+    fn:()=>{closeModal();if(S.caseTpl===c&&!S.caseResult)doAction(action);}});
+  modalBtns(c.name,"",buttons);
+  document.getElementById("modal").classList.add("case-notes");
+  document.getElementById("m-text").hidden=true;
+  const box=document.getElementById("m-extra");
+  const close=document.createElement("button");close.className="case-close";
+  close.setAttribute("aria-label","合上案卷");close.innerHTML=uiIcon("close");close.onclick=closeModal;box.appendChild(close);
+  const meta=document.createElement("div");meta.className="case-sheet-meta";
+  meta.innerHTML=`<span>临汴州衙 · 已查${S.caseClue}／${c.clues.length}条线索${S.caseProof?" · 铁证在手":""}</span><span>赏钱${fmt(c.reward)} · ${"★".repeat(c.diff)}</span>`;
+  box.appendChild(meta);
+  const tabs=document.createElement("div");tabs.className="case-tabs";tabs.setAttribute("role","tablist");tabs.setAttribute("aria-label","案卷内容");
+  box.appendChild(tabs);
+  const pages={},tabButtons={};
+  const select=key=>{
+    Object.keys(pages).forEach(k=>{pages[k].hidden=k!==key;tabButtons[k].setAttribute("aria-selected",String(k===key));});
+    document.getElementById("modal").scrollTop=0;
+  };
+  [["story","案情"],["evidence","线索"],["testimony","供词"]].forEach(([key,label])=>{
+    const b=document.createElement("button");b.textContent=label;b.id="case-tab-"+key;b.type="button";
+    b.setAttribute("role","tab");b.setAttribute("aria-controls","case-page-"+key);b.onclick=()=>select(key);
+    b.onkeydown=e=>{
+      const keys=["story","evidence","testimony"],i=keys.indexOf(key);
+      const next=e.key==="ArrowRight"?keys[(i+1)%3]:e.key==="ArrowLeft"?keys[(i+2)%3]:e.key==="Home"?keys[0]:e.key==="End"?keys[2]:null;
+      if(next){e.preventDefault();select(next);tabButtons[next].focus();}
+    };
+    tabs.appendChild(b);tabButtons[key]=b;
+    const page=document.createElement("div");page.className="case-page";page.id="case-page-"+key;
+    page.setAttribute("role","tabpanel");page.setAttribute("aria-labelledby",b.id);box.appendChild(page);pages[key]=page;
+  });
+  (c.intro||`【${c.name}】三人各有说辞，查过证据再断。`).split(/\n\s*\n/).forEach(text=>{
+    const p=document.createElement("p");p.textContent=text;pages.story.appendChild(p);
+  });
+  c.clues.forEach((clue,i)=>{
+    const known=i<S.caseClue,card=document.createElement("article");card.className="case-evidence"+(known?"":" locked");
+    const label=document.createElement("h4");label.textContent=`线索${i+1} · ${known?"已查明":"尚未查明"}`;
+    const p=document.createElement("p");p.textContent=known?clue:"继续走访或勘验，再核这一处情形。";
+    card.appendChild(label);card.appendChild(p);pages.evidence.appendChild(card);
+  });
+  if(S.caseAsked&&c.say){
+    c.suspects.forEach((name,i)=>{
+      const person=document.createElement("details");person.className="case-person";person.open=i===0;
+      const summary=document.createElement("summary"),avatar=document.createElement("span"),label=document.createElement("span");
+      avatar.className="case-avatar";avatar.textContent=name.slice(0,1);avatar.setAttribute("aria-hidden","true");label.textContent=name;
+      summary.appendChild(avatar);summary.appendChild(label);person.appendChild(summary);
+      const p=document.createElement("p");p.textContent=c.say[i];person.appendChild(p);pages.testimony.appendChild(person);
+    });
+  }else{
+    const p=document.createElement("p");p.textContent=c.say?"几人还未提审，供词须问过才能记入案卷。":"这一案没有收录供词，须从查得的线索入手。";
+    pages.testimony.appendChild(p);
+    if(c.say){const b=document.createElement("button");b.textContent="提审问话";b.onclick=()=>{closeModal();if(S.caseTpl===c&&!S.caseResult)doAction({can:()=>true,noSlot:true,run:caseAsk});};pages.testimony.appendChild(b);}
+  }
+  select(pages[view]?view:"story");
 }
 function caseExtraQuestion(){
   const c=S.caseTpl;
@@ -3390,12 +3627,9 @@ function caseClueGain(stCost, cost, how) {
 }
 function caseAsk() {
   const c = S.caseTpl;
+  if(!c||S.caseResult) return;
   if (!S.caseAsked) { S.caseAsked=true; S.stamina=Math.max(0,S.stamina-5); }
-  const btns = c.suspects.map((sp,i)=>({text:sp,fn:()=>{
-    modalBtns(`供词·${sp}`, c.say[i], [{text:"再问一个",fn:caseAsk},{text:"退堂",fn:closeModal}]);
-  }}));
-  btns.push({text:"退堂",fn:closeModal});
-  modalBtns(`提审·${c.name}`, "三人都带到了堂下。你先问谁？", btns);
+  openCaseNotes("testimony");
 }
 function caseConfront() {
   const c = S.caseTpl;
@@ -4400,7 +4634,7 @@ function yamenActions() {
         else if (S.fame>=60 && Math.random()<0.5 && S.caseTpl.clues.length>1) { S.caseClue=1;
           log(`【口碑】苦主是自己找上门来的，进门就把话说清了：${S.caseTpl.clues[0]}`,"sys"); }
         log(`接下【${S.caseTpl.name}】（难度${"★".repeat(S.caseTpl.diff)}，赏钱${fmt(S.caseTpl.reward)}）。`);
-        if (S.caseTpl.intro) modal(`案卷·${S.caseTpl.name}`, S.caseTpl.intro);}});
+        if (S.caseTpl.intro) openCaseNotes();}});
   } else {
     acts.push({name:"暂无新案卷", hint:`过${S.caseCooldown}日再来`, can:()=>false, run:()=>{}});
   }
@@ -4742,6 +4976,23 @@ function setupReportBtns() {
 }
 
 /* ================= 界面 ================= */
+/* 本地线形图标，不依赖外部字体、脚本或网络。 */
+function uiIcon(kind){
+  const paths={
+    search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/>',
+    talk:'<path d="M4 4h12v9H8l-4 3V4Zm5 13h7l4 3V9"/>',
+    book:'<path d="M5 3h13v18H5a2 2 0 0 1 0-4h13M5 3a2 2 0 0 0-2 2v14M7 7h7M7 11h5"/>',
+    people:'<circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M17 4a3 3 0 0 1 0 6m2 4a5 5 0 0 1 2 4v3"/>',
+    skill:'<path d="m4 17 7-10 3 2-3 6 6-4 3 2-7 8H6l-2-4ZM11 7l2-4 3 2-2 4"/>',
+    ledger:'<path d="M6 3h13v18H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm3 4h6m-6 4h6m-6 4h4M4 7H2m2 5H2m2 5H2"/>',
+    shop:'<path d="m3 9 2-6h14l2 6M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M5 12v9h14v-9m-9 9v-6h4v6"/>',
+    rest:'<path d="M3 18V9m0 6h18v6M7 10h12a2 2 0 0 1 2 2v3M3 21v-3m5-6H3"/>',
+    arrow:'<path d="m9 5 7 7-7 7"/>',close:'<path d="m6 6 12 12M6 18 18 6"/>',
+    task:'<path d="M6 3h12v18H6V3m3 5h6m-6 4h6m-6 4h3"/>'
+  };
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[kind]||paths.task}</svg>`;
+}
+const LOCATION_CAPTIONS={home:"关起门来，歇歇脚力",yamen:"案牍有据，人情有声",market:"街头来往，买卖趁早",dock:"船来船往，脚下有活",tea:"一盏清茶，半日闲话",casino:"灯火未歇，盘清账目",rural:"出了城门，又见生计",herb:"药屉齐整，照应街坊"};
 function fmt(wen) {
   const g=Math.floor(wen/GUAN), w=wen%GUAN;
   if (g&&w) return `${g}贯${w}文`;
@@ -4766,6 +5017,7 @@ function bindUIFold(d,key,fallback){
     uiPrefs[mode]=uiPrefs[mode]||{};
     uiPrefs[mode][key]=d.open;
     try { localStorage.setItem(UI_PREF_KEY,JSON.stringify(uiPrefs)); } catch(e) {}
+    if(key==="travel") document.getElementById("change-place").setAttribute("aria-expanded",String(d.open));
   };
 }
 function closeUIFold(id){ const d=document.getElementById(id); if(d) d.open=false; }
@@ -4773,17 +5025,30 @@ function applyUIFolds(){
   bindUIFold(document.getElementById("status-fold"),"status",!compactMobile());
   if(!compactMobile()) document.getElementById("status-fold").open=true;
   bindUIFold(document.getElementById("nav-fold"),"travel",!compactMobile());
-  bindUIFold(document.getElementById("books-fold"),"books",!compactMobile());
-  bindUIFold(document.getElementById("scene-fold"),"scene",!compactMobile());
+  document.getElementById("books-fold").open=true;
+  document.getElementById("scene-fold").open=true;
+  document.getElementById("change-place").setAttribute("aria-expanded",String(document.getElementById("nav-fold").open));
   bindUIFold(document.getElementById("log-fold"),"log",!compactMobile());
 }
 function initCompactUI(){
   applyUIFolds();
+  document.getElementById("change-place").onclick=()=>{
+    const nav=document.getElementById("nav-fold");nav.open=!nav.open;
+    document.getElementById("change-place").setAttribute("aria-expanded",String(nav.open));
+  };
   if(uiMedia&&uiMedia.addEventListener) uiMedia.addEventListener("change",()=>{applyUIFolds();if(S) render();});
   if(typeof document.addEventListener==="function") document.addEventListener("click",e=>{
     const info=document.getElementById("status-fold");
     if(compactMobile()&&info.open&&!info.contains(e.target)) info.open=false;
   });
+  document.getElementById("overlay").onkeydown=e=>{
+    if(e.key!=="Tab")return;
+    const buttons=Array.from(document.getElementById("modal").querySelectorAll('button:not(:disabled),summary,input,select,a[href]')).filter(el=>el.getClientRects().length);
+    if(!buttons.length)return;
+    const first=buttons[0],last=buttons[buttons.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  };
 }
 function updateLogSummary(){
   const el=document.getElementById("log"), top=el.firstElementChild;
@@ -4795,7 +5060,7 @@ function updateLogSummary(){
 function actionGroup(a){
   const name=typeof a.name==="function"?a.name():a.name;
   if(/（灰）|（灰名单）|停收平安钱/.test(name)) return "gray";
-  if(/补充问话|过堂问话|叫嫌犯当堂对质|请吴师爷看看案卷/.test(name)) return "assist";
+  if(/补充问话|过堂问话|叫嫌犯当堂对质|请吴师爷看看案卷|^提前指认/.test(name)) return "assist";
   if(/主线|追查周二郎|周二郎：|^提审：/.test(name)||name.startsWith("指认真凶：")&&(!S.caseTpl||!name.includes(S.caseTpl.name))) return "story";
   if(/添置|修一方说书台|整修雅座|修整晒药架|添设问诊席|换新牌桌|整修灯火|修整后厅|^盘下整/.test(name)) return "upgrade";
   if(/^(瓦子帮闲|富户护院|替书铺抄书|代写状子)$/.test(name)) return "labor";
@@ -4803,7 +5068,7 @@ function actionGroup(a){
   if(name==="给吴师爷捎份茶汤钱") return "social";
   return "main";
 }
-function renderAction(a,parent){
+function renderAction(a,parent,primary){
   const name=typeof a.name==="function"?a.name():a.name;
   const hintText=typeof a.hint==="function"?a.hint():a.hint;
   if(name.includes("（你的产业）")||name==="暂无新案卷"){
@@ -4811,16 +5076,47 @@ function renderAction(a,parent){
     note.textContent=`${name} · ${hintText}`;parent.appendChild(note);return;
   }
   const wrap=document.createElement("div");wrap.className="action-row";
-  const b=document.createElement("button");b.textContent=name;b.disabled=S.over||!a.can();
-  b.onclick=()=>doAction(a);
+  const b=document.createElement("button");b.disabled=S.over||!a.can();
+  if(primary)b.className="primary-action";
+  b.setAttribute("aria-label",name+(hintText?" · "+hintText:""));
+  const icon=document.createElement("span");icon.className="ui-icon";
+  icon.innerHTML=uiIcon(/查案|指认|接一桩/.test(name)?"search":/提审|问话|对质|闲话/.test(name)?"talk":/歇息|睡觉|好饭|抓副药/.test(name)?"rest":/坊|药铺|入股|添置/.test(name)?"shop":"task");
+  const copy=document.createElement("span");copy.className="action-copy";
+  const label=document.createElement("span");label.className="action-name";
+  label.textContent=S.loc==="yamen"&&S.caseTpl?name.replace(/^查案：.*$/, "继续查案").replace(/^提审嫌犯：.*$/,"提审问话").replace(/^指认真凶：.*$/,"指认真凶"):name;
   const hint=document.createElement("span");hint.className="hint";hint.textContent=hintText;
-  wrap.appendChild(b);wrap.appendChild(hint);parent.appendChild(wrap);
+  copy.appendChild(label);copy.appendChild(hint);
+  const arrow=document.createElement("span");arrow.className="ui-chevron";arrow.innerHTML=uiIcon("arrow");
+  b.appendChild(icon);b.appendChild(copy);b.appendChild(arrow);
+  b.onclick=()=>doAction(a);
+  wrap.appendChild(b);parent.appendChild(wrap);
+}
+function renderCaseCard(parent){
+  const c=S.caseTpl;if(S.loc!=="yamen"||!c)return;
+  const card=document.createElement("article");card.className="case-card";
+  const head=document.createElement("div");head.className="case-card-head";
+  const title=document.createElement("h3");title.textContent=c.name;
+  const badge=document.createElement("span");badge.className="case-badge";badge.textContent=S.caseResult?"已结待退堂":"在办";
+  head.appendChild(title);head.appendChild(badge);card.appendChild(head);
+  const summary=document.createElement("p");summary.className="case-summary";
+  const opening=(c.intro||"三人各有说辞，赔偿的数目还得查清。").split(/[。！？]/)[0];
+  summary.textContent=opening.length>65?opening.slice(0,65)+"……":opening+"。";card.appendChild(summary);
+  const meta=document.createElement("div");meta.className="case-meta";
+  meta.innerHTML=`<span class="clue-dots" aria-hidden="true">${c.clues.map((_,i)=>`<span class="${i<S.caseClue?"known":""}"></span>`).join("")}</span><span>已查${S.caseClue}／${c.clues.length}条线索</span><span class="reward">${S.caseResult?"已领"+fmt(S.caseResult.reward):"赏钱"+fmt(c.reward)}</span>`;
+  card.appendChild(meta);
+  const open=document.createElement("button");open.className="case-open";
+  const label=document.createElement("span");label.textContent=S.caseResult?"查看结案记录":"翻开案卷";
+  const arrow=document.createElement("span");arrow.className="ui-chevron";arrow.innerHTML=uiIcon("arrow");
+  open.appendChild(label);open.appendChild(arrow);open.onclick=()=>S.caseResult?showCaseResult():openCaseNotes();card.appendChild(open);parent.appendChild(card);
 }
 function renderGroupedActions(acts,parent){
   const groups={main:[],assist:[],labor:[],trade:[],upgrade:[],story:[],social:[],gray:[],other:[]};
   acts.forEach(a=>groups[actionGroup(a)].push(a));
   if(groups.social.length&&groups.gray.length){groups.other=[...groups.social,...groups.gray];groups.social=[];groups.gray=[];}
-  groups.main.forEach(a=>renderAction(a,parent));
+  renderCaseCard(parent);
+  const main=groups.main.filter(a=>!(S.loc==="yamen"&&S.caseTpl&&(String(a.name).startsWith("案卷：")||a.name==="查看结案记录")));
+  const primary=main.find(a=>a.can());
+  main.forEach(a=>renderAction(a,parent,a===primary));
   const names={assist:"查案辅助 · 过堂与对质",labor:"零工与手艺",trade:"行商手段与装备",upgrade:"店铺添置与扩建",story:"大案与旧事",social:"人情往来",other:"人情与灰色营生",gray:S.louGui?"灰色营生 · 正收平安钱":"灰色营生"};
   Object.keys(names).forEach(k=>{
     if(!groups[k].length) return;
@@ -4833,11 +5129,11 @@ function renderGroupedActions(acts,parent){
 }
 
 function render() {
-  document.getElementById("hdr-day").textContent = S.over?"剧终":`${isLeisure()?"临汴日常 · ":""}第${S.day}天 · ${SLOTS[S.slot]}`;
+  document.getElementById("hdr-day").innerHTML = S.over?"剧终":`<span class="day-period">${isLeisure()?"临汴日常":"宣和三年"}</span><span class="day-value">第${S.day}天 · ${SLOTS[S.slot]}</span>`;
   document.getElementById("stats").innerHTML =
-    `<span>银钱 <b>${fmt(S.money)}</b></span>`+
-    `<span>体力 <b>${S.stamina}</b>/${staMax()}${S.stamina<20?" ⚠":""}</span>`+
-    `<span class="weather-now">${S.weather||"晴"}</span>`;
+    `<span class="money-stat">银钱 <b>${fmt(S.money)}</b></span>`+
+    `<span class="stamina-stat">体力 <span class="stat-value"><b>${S.stamina}</b>/${staMax()}${S.stamina<20?" ⚠":""}</span></span>`+
+    `<span class="weather-now">天时 <b>${S.weather||"晴"}</b></span>`;
   document.getElementById("stats-more").innerHTML =
     `<span>恶名 <b>${S.infamy}</b>${S.infamy>=40?" ⚠":""}</span>`+
     `<span>负重 <b>${invTotal()}</b>/${S.loadCap}担</span>`+
@@ -4858,24 +5154,27 @@ function render() {
     const b=document.createElement("button");
     b.textContent=l.name;
     b.disabled=S.over;
-    if (l.id===S.loc){b.style.background="var(--ink)";b.style.color="var(--paper)";}
+    if (l.id===S.loc)b.setAttribute("aria-current","location");
     b.onclick=()=>{S.loc=l.id;if(compactMobile())closeUIFold("nav-fold");render();saveGame();};
     locBox.appendChild(b);
   });
   const ledger=document.createElement("button");
   ledger.textContent=isLeisure()?"日常账本":"账本·还款"; ledger.className="seal"; ledger.disabled=S.over; ledger.onclick=openLedger;
-  books.appendChild(ledger);
   const rel=document.createElement("button");
   rel.textContent="人情簿"; rel.disabled=S.over; rel.onclick=openRelations;
-  books.appendChild(rel);
   const skb=document.createElement("button");
   skb.textContent="本　事"; skb.disabled=S.over; skb.onclick=openSkills;
-  books.appendChild(skb);
-  const book=document.createElement("button"); book.textContent="案　簿"; book.disabled=S.over; book.onclick=()=>openCaseBook(0); books.appendChild(book);
-  [ledger,rel,skb,book].forEach(b=>{const open=b.onclick;b.onclick=()=>{if(compactMobile())closeUIFold("books-fold");open();};});
+  const book=document.createElement("button"); book.textContent="案簿"; book.disabled=S.over; book.onclick=()=>openCaseBook(0);
+  [[book,"book","案簿"],[rel,"people","人情"],[skb,"skill","本事"],[ledger,"ledger","账本"]].forEach(([b,kind,label])=>{
+    const name=b.textContent;b.textContent="";b.setAttribute("aria-label",name);
+    const icon=document.createElement("span");icon.className="ui-icon";icon.innerHTML=uiIcon(kind);
+    const text=document.createElement("span");text.textContent=label;b.appendChild(icon);b.appendChild(text);books.appendChild(b);
+    const open=b.onclick;b.onclick=()=>{if(compactMobile())closeUIFold("nav-fold");open();};
+  });
   document.getElementById("loc-title").textContent=LOCATIONS.find(l=>l.id===S.loc).name;
-  document.getElementById("scene").innerHTML =
-    ART_OVERRIDE[S.loc] ? `<img src="${ART_OVERRIDE[S.loc]}" alt="">` : (SCENES[S.loc]||"");
+  document.getElementById("loc-sub").textContent=LOCATION_CAPTIONS[S.loc]||"临汴城里，日子照常";
+  document.getElementById("scene-art").innerHTML =
+    ART_OVERRIDE[S.loc] ? `<img src="${ART_OVERRIDE[S.loc]}" alt="${LOCATIONS.find(l=>l.id===S.loc).name}水墨街景">` : (SCENES[S.loc]||"");
   const actBox=document.getElementById("actions");
   actBox.innerHTML="";
   let acts=ACTIONS[S.loc]||[];
@@ -4928,14 +5227,17 @@ function cinematic(title, body, seal, btnText, btnFn, imgKey) {
 }
 function hideCine(){ document.getElementById("cine").classList.remove("show"); }
 function modalBtns(title,text,btns){
+  const modalBox=document.getElementById("modal");modalBox.classList.remove("case-notes");modalBox.scrollTop=0;
   const mx=document.getElementById("m-extra"); mx.innerHTML=""; mx.style.cssText="";
   document.getElementById("m-btns").style.clear="";
   document.getElementById("m-title").textContent=title;
   document.getElementById("m-text").textContent=text;
+  document.getElementById("m-text").hidden=false;
   const box=document.getElementById("m-btns"); box.innerHTML="";
   btns.forEach(b=>{ const el=document.createElement("button"); el.textContent=b.text;
     if(b.seal)el.className="seal"; el.disabled=!!b.disabled; el.onclick=b.fn; box.appendChild(el); });
   document.getElementById("overlay").classList.add("show");
+  if(box.firstElementChild&&typeof box.firstElementChild.focus==="function")box.firstElementChild.focus({preventScroll:true});
 }
 function closeModal(){ document.getElementById("overlay").classList.remove("show");
   if(S&&!S.over&&!isLeisure()&&S.debt<=0){ finale(); return; }

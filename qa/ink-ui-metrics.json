@@ -1,0 +1,42 @@
+{
+  "main390": {
+    "actionTop": 246.78125,
+    "appHeight": 851.765625,
+    "books": {
+      "bottom": 805.265625,
+      "height": 65,
+      "left": 8,
+      "right": 382,
+      "top": 740.265625,
+      "width": 374,
+      "x": 8,
+      "y": 740.265625
+    },
+    "collapsed": [
+      true,
+      true
+    ],
+    "sceneHeight": 96,
+    "scrollWidth": 390,
+    "viewportWidth": 390
+  },
+  "case320": {
+    "buttons": [
+      {
+        "bottom": 605.875,
+        "height": 44,
+        "label": "合上案卷"
+      },
+      {
+        "bottom": 605.875,
+        "height": 44,
+        "label": "继续查案"
+      }
+    ],
+    "clientHeight": 577,
+    "scrollHeight": 577,
+    "scrollWidth": 320,
+    "viewportWidth": 320,
+    "width": 300
+  }
+}
